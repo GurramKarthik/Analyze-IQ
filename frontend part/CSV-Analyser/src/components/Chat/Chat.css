@@ -1,0 +1,8 @@
+.Messagebox{
+    border-radius: 20px 20px 0 20px ;
+}
+
+.cardHover:hover{
+    margin: 1.3vmin;
+    transform: scale(1.07);
+}

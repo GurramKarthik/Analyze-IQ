@@ -1,0 +1,53 @@
+.HeroSection{
+    min-height: 80vh;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.heading{
+    h1{
+        font-size: 8vmin;
+    }
+    *{
+        margin: 0px;
+        padding: 0px;
+    }
+}
+
+.HeroContent{
+    width: 50%;
+    height: 80vh;
+    text-align: center;
+    padding-top: 10vmin;
+
+}
+
+.textContent{
+    margin: 5vmin;
+    font-size: larger;
+    font-family:  'Times New Roman', Times, serif;
+}
+
+
+.cardView{
+    display: flex;
+    flex-wrap: wrap;
+    &:hover{
+        transform: scale(1);
+    }
+}
+
+#cardText{
+    width: 90%;
+    text-wrap:inherit;
+    align-self: center;
+    margin-top: 2vmin;
+    background-color: wheat;
+}
+
+.icons{
+    scale: 1;
+    background-color: yellow;
+    transform: scale(1vmin);
+}
