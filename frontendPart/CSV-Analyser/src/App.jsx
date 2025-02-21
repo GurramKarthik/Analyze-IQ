@@ -10,6 +10,7 @@ import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import AppSidebar from "./SideBar";
 import { ModeToggle } from "./components/Home/Dark";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import LoginTrigger from "./components/Auth/LoginTrigger";
 
 const App = () => {
   return (
@@ -21,10 +22,12 @@ const App = () => {
       <SidebarProvider>
         <div className="NavBar">
           <ModeToggle />
-          <Avatar>
+          <LoginTrigger/>
+          {/* <Avatar>
             <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
             <AvatarFallback>CN</AvatarFallback>
-          </Avatar>
+          </Avatar> */}
+
         </div>
 
         <div className="min-h-screen w-screen flex flex-row ">

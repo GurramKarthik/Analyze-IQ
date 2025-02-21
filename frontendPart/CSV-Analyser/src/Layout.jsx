@@ -4,11 +4,20 @@ import {
     ResizablePanelGroup,
   } from "@/components/ui/resizable"
 import { ModeToggle } from "./components/Home/Dark"
+
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+
+
 import {
     Avatar,
     AvatarFallback,
     AvatarImage,
   } from "@/components/ui/avatar"
+import LoginTrigger from "./components/Auth/LoginTrigger"
   
   export default function Layout({children}) {
     return (
@@ -26,10 +35,8 @@ import {
           <div className="h-full">
                 <div className="NavBar">
                         <ModeToggle/>
-                        <Avatar>
-                            <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-                            <AvatarFallback>CN</AvatarFallback>
-                        </Avatar>
+                        <LoginTrigger/>
+
                 </div>
                 {children}
           </div>
