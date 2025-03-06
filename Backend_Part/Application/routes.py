@@ -1,5 +1,5 @@
 from flask import request, jsonify
-from controllers.user_Controllers import register_user, login_user, logout_user
+from controllers.user_Controllers import register_user, login_user, logout_user, update_user
 
 import os
 import pandas as pd
@@ -35,15 +35,29 @@ def setup_routes(app, db):
     def logout():
         return logout_user()
     
+    @app.route("/CSV/update" , methods=["PUT"])
+    def update():
+        return update_user(request , db)
+    
     
     @app.route("/CSV/dashboard", methods=["GET"])
     def dashboard():
         return jsonify({"message": "Welcome to CSV Analyzer Dashboard"})
     
     
-    @app.route("/CSV/files" , methods=["GET"])
+    @app.route("/CSV/files", methods=["GET"])
     def files():
-        return jsonify({"message" : "This is files Page"})
+        user_email = request.args.get("email")
+
+        if not user_email:
+            return jsonify({"error": "Email is required"}), 400
+
+        user = db["users"].find_one({"email": user_email})
+
+        if not user or "files" not in user or len(user["files"]) == 0:
+            return jsonify({"error": "No files found for this user"}), 404
+
+        return jsonify({"files": user["files"]}), 200
     
     
     # @app.route("/CSV/chat", methods=["GET"])
