@@ -72,3 +72,61 @@ def logout_user():
     response.set_cookie("jwt", "", expires=0)  # Remove the cookie by setting expiration to zero
     return response, 200
 
+
+
+
+def update_user(request, db):
+    data = request.json
+    users = db["users"]
+
+    email = data.get("email") 
+    new_name = data.get("name")
+    new_phone = data.get("phone")
+    new_password = data.get("password")
+    new_email = data.get("new_email") 
+
+    if not email:
+        return jsonify({"error": "Email is required"}), 400
+
+    # Find the user in the database
+    user = users.find_one({"email": email})
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    update_data = {}
+    update_messages = []
+
+    # Update only provided fields
+    if new_name and new_name.strip() and new_name != user.get("name"):
+        update_data["name"] = new_name
+        update_messages.append("UserName updated Successfully.")
+        
+    if new_phone and new_phone.strip and new_phone != user.get("phone"):
+        update_data["phone"] = new_phone
+        update_messages.append("Phone Number updated Successfully.")
+         
+    if new_password and new_password.strip():
+        # Check if the new password is actually different
+        if not verify_password(new_password, user.get("password")):
+            update_data["password"] = hash_password(new_password)
+            update_messages.append("Password updated Successfully.")
+        
+    if new_email and new_email.strip() and new_email != user.get("email"):
+        existing_user = users.find_one({"email": new_email})
+        if existing_user:
+            return jsonify({"error": "Email is already registered"}), 400
+        update_data["email"] = new_email
+        update_messages.append("Email updated Successfully.")
+
+
+    if not update_data:
+        return jsonify({"error": "No fields to update"}), 400
+
+    # Update the user in MongoDB
+    users.update_one({"email": email}, {"$set": update_data})
+
+    return jsonify({"message": update_messages}), 200
+
+
+
+
