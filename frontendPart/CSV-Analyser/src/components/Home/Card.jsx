@@ -4,7 +4,7 @@ import { MagicCard } from "../magicui/magic-card";
 
 export default function Card({title, details}) {
   return (
-    <div className="cardHover w-full">
+    <div className="w-full">
       <MagicCard
         className="cursor-pointer flex-col items-center justify-top whitespace-nowrap shadow-1xl z-[-1]  p-3 "
       >

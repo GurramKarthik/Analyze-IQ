@@ -31,7 +31,7 @@ def setup_routes(app, db):
     def login():
         return login_user(request, db)
     
-    @app.route("/CSV/logout", methods=["POST"])
+    @app.route("/CSV/logout", methods=["GET"])
     def logout():
         return logout_user()
     
@@ -130,6 +130,27 @@ def setup_routes(app, db):
         user_email = data.get("email")
         query = data.get("query")
 
+        Chat_Query = """
+            Hey, Now you are a senior data Analyst. Understand the data in the given file. I need you to give me the following details in json format.
+            Details: {
+                overview: {
+                    rows: ,
+                    cols: ,
+                    unique: ( a json with colname as key and value in percentage)
+                },
+                describe:{
+                    mean: (a json with colname as key and value in percentage),
+                    std: (a json with colname as key and value in percentage),
+                    min: (a json with colname as key and value in percentage),
+                    max: (a json with colname as key and value in percentage)
+                },
+                Kurtosis : ( A JSON with column names as keys and their kurtosis values).
+            }   
+
+    
+            Just give me the answer. No preamble required.
+        """
+
         # Fetch user's latest file from MongoDB
         user = db["users"].find_one({"email": user_email})
         if not user or "files" not in user or len(user["files"]) == 0:
@@ -156,7 +177,7 @@ def setup_routes(app, db):
         # Process query
         query_engine = SmartDataframe(df, config={"llm": llm, "enable_cache": False})
         answer = query_engine.chat(query)
-
+        
         return jsonify({"query": query, "answer": answer}), 200
     
     if __name__ == "__main__":

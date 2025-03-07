@@ -63,7 +63,9 @@ export default {
   		},
   		animation: {
   			grid: 'grid 15s linear infinite',
-  			shine: 'shine var(--duration) infinite linear'
+  			shine: 'shine var(--duration) infinite linear',
+  			rippling: 'rippling var(--duration) ease-out',
+  			pulse: 'pulse var(--duration) ease-out infinite'
   		},
   		keyframes: {
   			grid: {
@@ -83,6 +85,23 @@ export default {
   				},
   				to: {
   					'background-position': '0% 0%'
+  				}
+  			},
+  			rippling: {
+  				'0%': {
+  					opacity: '1'
+  				},
+  				'100%': {
+  					transform: 'scale(2)',
+  					opacity: '0'
+  				}
+  			},
+  			pulse: {
+  				'0%, 100%': {
+  					boxShadow: '0 0 0 0 var(--pulse-color)'
+  				},
+  				'50%': {
+  					boxShadow: '0 0 0 8px var(--pulse-color)'
   				}
   			}
   		}

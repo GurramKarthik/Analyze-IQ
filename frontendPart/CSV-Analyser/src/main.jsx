@@ -10,6 +10,11 @@ import "./index.css"
 import Signup from './components/Auth/Signup.jsx';
 import Login from './components/Auth/Login.jsx';
 import Authentication from './components/Auth/Authentication.jsx';
+import {Provider} from "react-redux"
+import { store } from './Store/index.js';
+import { persistStore } from "redux-persist";
+import { PersistGate } from "redux-persist/integration/react";
+
 
 const router = createBrowserRouter([
   {
@@ -22,18 +27,17 @@ const router = createBrowserRouter([
       { path: 'files', element: <Files /> },
     ],
   },
-  { path: '/auth', 
-    element: <Authentication />,
-    children:[ 
-      {path:"signup" , element:<Signup/>},
-      { path:"login", element:<Login/> }
-    ],
-   },
+  {path:'/auth', element:<Authentication/>}
 ]);
 
+const persistor = persistStore(store)
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-      <RouterProvider router={router}/>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <RouterProvider router={router}/>
+      </PersistGate>
+    </Provider>
   </StrictMode>
 )
