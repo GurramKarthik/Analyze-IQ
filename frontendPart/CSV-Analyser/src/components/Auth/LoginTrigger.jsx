@@ -16,6 +16,8 @@ import { setUser } from "@/Store/User";
 import { ToastMessage } from "../Home/ToastMessage";
 import { BACKEND_END_POINT } from "@/utils/Constants";
 import { useState } from "react";
+import { clearChat } from "@/Store/chat";
+import { persistor } from "@/main";
 
 export default function LoginTrigger() {
   const navigate = useNavigate();
@@ -33,6 +35,8 @@ export default function LoginTrigger() {
       if (response.data.success) {
         ToastMessage("Logged out", "You have successfully logged out");
         dispatch(setUser(null));
+        dispatch(clearChat([]));
+        persistor.purge(); 
         navigate("./auth");
       }
     } catch (error) {

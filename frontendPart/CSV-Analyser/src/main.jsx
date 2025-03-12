@@ -30,7 +30,7 @@ const router = createBrowserRouter([
   {path:'/auth', element:<Authentication/>}
 ]);
 
-const persistor = persistStore(store)
+export const persistor = persistStore(store)
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>

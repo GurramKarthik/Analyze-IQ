@@ -1,7 +1,7 @@
 import {combineReducers,configureStore} from "@reduxjs/toolkit"
 import userSlice from "./User"
+import chatSlice from "./chat"
 import {
-    persistStore,
     persistReducer,
     FLUSH,
     REHYDRATE,
@@ -20,6 +20,7 @@ import {
 
   const rootReducer = combineReducers({
     user: userSlice,
+    chat: chatSlice
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)

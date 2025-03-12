@@ -23,7 +23,7 @@ export default function HeroSection() {
   }
 
   return (
-    <div className="relative flex h-[100vh] w-full flex-col items-center justify-center overflow-hidden bg-background md:shadow-xl">
+    <div className="relative flex h-[100vh] w-full flex-col items-center justify-center overflow-hidden bg-background md:shadow-xl z-[0]">
      
      <InteractiveGridPattern
         className={cn(
@@ -35,7 +35,7 @@ export default function HeroSection() {
         squaresClassName="hover:fill-green-400"
       />
       <p className="whitespace-pre-wrap text-center text-7xl font-medium tracking-tighter text-black dark:text-white">
-           Analyze <span style={{color:"green"}}>IQ</span>
+           Analyze <span style={{color:"#16a34a"}}>IQ</span>
       </p>
       <p className="m-1 z-3" >Analyze. Visualize. Interpret. Automate</p>
       <p className="m-6 w-[70%] text-center">No more struggling with spreadsheets or writing complex formulas. CSV-Analyser makes data exploration effortless—just upload your CSV, ask questions, and watch AI generate instant insights with interactive visualizations.</p>

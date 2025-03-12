@@ -86,7 +86,7 @@
 
 
 .NavBar{
-  position: absolute;
+  position: fixed !important;
   top: 2vmin;
   right: 2vmin;
   display: flex;
@@ -97,18 +97,25 @@
   padding: 1vmin 2.3vmin;
 }
 
-
-.sidebarTrigger{
+.sendBtn{
   position: relative;
-  display: flex;
-  justify-content: space-evenly;
-  align-items: center;
-  z-index: 14;
-  gap: 2vmin;
-  padding: 1vmin 2.3vmin;
 }
 
+.sendBtn:hover{
+  background-color: #fff;
+  padding: 3px;
+  border-radius: 3px;
+  scale: 1.2;
+}
+.sendBtn:hover svg{
+  stroke: black;
+}
 
+#message:focus {
+  border: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
 
 
 

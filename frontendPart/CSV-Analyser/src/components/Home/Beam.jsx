@@ -35,7 +35,7 @@ export default function Beam({ className }) {
   return (
     <div
       className={cn(
-        "relative m-auto flex h-[500px] w-[90vw] items-center justify-center overflow-hidden p-10 ",
+        "relative m-auto flex h-[500px] items-center justify-center overflow-hidden p-10 ",
         className
       )}
       ref={containerRef}

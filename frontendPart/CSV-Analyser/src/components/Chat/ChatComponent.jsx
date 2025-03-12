@@ -3,11 +3,11 @@ import { Bot, User } from 'lucide-react';
 
 const ChatComponent = ({Chats}) => {
   return (
-    <div >
+    < >
         {Chats.map((message) => (
           <div
             key={message.id}
-            className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+            className={` flex  ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             <div
               className={`flex items-start space-x-2 max-w-[80%] ${
@@ -31,7 +31,6 @@ const ChatComponent = ({Chats}) => {
                 }`}
               >
                 <p>{message.text}</p>
-                {console.log(message.text)}
                 <span className={`text-xs ${
                   message.sender === 'user' ? 'text-blue-100' : 'text-gray-500'
                 }`}>
@@ -40,7 +39,7 @@ const ChatComponent = ({Chats}) => {
             </div>
           </div>
         ))}
-      </div>
+      </>
   )
 }
 
