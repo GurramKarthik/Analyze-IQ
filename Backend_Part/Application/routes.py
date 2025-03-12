@@ -121,7 +121,7 @@ def setup_routes(app, db):
         return jsonify({"message": "File uploaded successfully", "file_url": file_url}), 200
 
     
-    
+    # This is chat route
     @app.route("/CSV/chat", methods=["POST"])
     def chat():
         # Get JWT token from request headers
