@@ -33,7 +33,7 @@ def setup_routes(app, db):
     def login():
         return login_user(request, db)
     
-    @app.route("/CSV/logout", methods=["POST"])
+    @app.route("/CSV/logout", methods=["GET"])
     def logout():
         return logout_user()
     
@@ -124,6 +124,7 @@ def setup_routes(app, db):
     
     @app.route("/CSV/chat", methods=["POST"])
     def chat():
+
         # Get JWT token from request headers
         token = request.headers.get("Authorization")
         if not token:
@@ -136,6 +137,7 @@ def setup_routes(app, db):
 
         # Fetch user's latest file from MongoDB using user_id
         user = db["users"].find_one({"_id": ObjectId(user_id)})
+
         if not user or "files" not in user or len(user["files"]) == 0:
             return jsonify({"error": "No files uploaded"}), 400
 
@@ -163,7 +165,7 @@ def setup_routes(app, db):
         
         query_engine = SmartDataframe(df, config={"llm": llm, "enable_cache": False})
         answer = query_engine.chat(query)
-
+        
         return jsonify({"query": query, "answer": answer}), 200
     
     if __name__ == "__main__":

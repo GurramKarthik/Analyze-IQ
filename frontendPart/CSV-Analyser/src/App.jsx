@@ -1,41 +1,36 @@
 import React from "react";
-// import Layout from './components/Layout'
-import { Outlet } from "react-router-dom";
-import HeroSection from "./components/Home/HeroSection";
-import Layout from "./Layout";
+import { Outlet, useNavigate } from "react-router-dom";
 import ThemeProvider from "./components/theme-provider";
-import Home from "./components/Home/Home";
 import "./App.css";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import AppSidebar from "./SideBar";
 import { ModeToggle } from "./components/Home/Dark";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import LoginTrigger from "./components/Auth/LoginTrigger";
+import { useSelector } from "react-redux";
+import { PulsatingButton } from "./components/magicui/pulsating-button";
+import { ToastContainer } from "react-toastify";
 
 const App = () => {
-  return (
-    // <Layout>
-    //      <Outlet/>
-    //  </Layout>
 
+  const {user} = useSelector(store => store.user);
+  const navigate = useNavigate();
+
+  
+  return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <SidebarProvider>
+      <SidebarProvider defaultOpen={"false"}>
         <div className="NavBar">
           <ModeToggle />
-          <LoginTrigger/>
-          {/* <Avatar>
-            <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-            <AvatarFallback>CN</AvatarFallback>
-          </Avatar> */}
-
+          {user ? <LoginTrigger/> : <PulsatingButton onClick={()=> navigate("/auth")}>Login</PulsatingButton> }
         </div>
 
         <div className="min-h-screen w-screen flex flex-row ">
 
           <AppSidebar className="flex-none" />
           <div className="grow w-[100%] ">
-              <SidebarTrigger className="sidebarTrigger" />
+              <SidebarTrigger className="sidebarTrigger"  />
               <Outlet />
+              <ToastContainer/>
           </div>
         </div>
 

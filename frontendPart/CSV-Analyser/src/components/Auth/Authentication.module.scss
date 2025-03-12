@@ -1,0 +1,42 @@
+.authContainer{
+    background-color: #25293c;
+    color: #cdcbe2;
+
+}
+
+// .parent{
+//     background: url('your-background-image.jpg') no-repeat center center/cover;
+//     /* A full-page background image to blur */
+//     margin: 0;
+//     padding: 0;
+//     height: 100vh;
+//     overflow: hidden;
+// }
+
+.right{
+    background-color: #2f3349;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    // backdrop-filter: blur(10px);
+    
+}
+
+.image{
+    object-fit: contain;
+}
+
+.heading{
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+.submitBtn{
+    position: relative;
+    transition-property: all;
+    transition-duration: 10ms;
+    &:hover{
+        background-color: #4646db;
+    }   
+}
