@@ -167,6 +167,7 @@ def setup_routes(app, db):
         answer = query_engine.chat(query)
         
         return jsonify({"query": query, "answer": answer}), 200
+
     
     if __name__ == "__main__":
         app.run(debug=True)
