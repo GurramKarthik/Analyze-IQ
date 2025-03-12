@@ -31,10 +31,7 @@ def register_user(request, db):
     # Insert into MongoDB
     users.insert_one(user)
 
-    return jsonify({
-        "success": True,
-        "message": "User registered successfully"
-        }), 201
+    return jsonify({"message": "User registered successfully"}), 201
 
 
 def login_user(request, db):
@@ -62,11 +59,9 @@ def login_user(request, db):
     }
 
     # Create response and store token in HTTP-only cookie
-
-    response = make_response(jsonify({"success":True,"message": "Login successful",
-                                      "token" : token,  "user" : user_data}))
-
-                                    
+    response = make_response(jsonify({"message": "Login successful",
+                                      "token" : token,
+                                      "user" : user_data}))
     response.set_cookie("jwt", token, httponly=True, secure=True, samesite="Lax")  # Secure the cookie
 
     return response, 200
@@ -74,7 +69,7 @@ def login_user(request, db):
     
 def logout_user():
     """Clears the JWT token from cookies (logout)."""
-    response = make_response(jsonify({"success":True,"message": "Logged out successfully"}))
+    response = make_response(jsonify({"message": "Logged out successfully"}))
     response.set_cookie("jwt", "", expires=0)  # Remove the cookie by setting expiration to zero
     return response, 200
 
