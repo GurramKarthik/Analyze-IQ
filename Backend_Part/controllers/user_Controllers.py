@@ -3,7 +3,7 @@ import jwt
 import datetime
 from bson.objectid import ObjectId
 from flask import jsonify , make_response
-from utils.jwt_utils import generate_jwt_token, decode_jwt_token, hash_password, verify_password
+from utils.jwt_utils import generate_jwt_token, decode_jwt_token, hash_password, verify_password, get_token_from_cookies
 
 SECRET_KEY = "mhdsf vcne fj  vs dvhehrhujqiwja  j   hfhwhbs  shbfu92bhwisvf9"
 
@@ -44,7 +44,7 @@ def login_user(request, db):
     if not user:
         return jsonify({"error": "User not found"}), 404
     
-    # Verify password (ensure correct parameter order)
+    # Verify password
     if not verify_password(data.get("password"), user["password"]):
         return jsonify({"error": "Invalid password"}), 401
     
@@ -61,7 +61,8 @@ def login_user(request, db):
     # Create response and store token in HTTP-only cookie
     response = make_response(jsonify({"message": "Login successful",
                                       "token" : token,
-                                      "user" : user_data}))
+                                      "user" : user_data
+                                      }))
     response.set_cookie("jwt", token, httponly=True, secure=True, samesite="Lax")  # Secure the cookie
 
     return response, 200
@@ -75,13 +76,10 @@ def logout_user():
 
 
 def update_user(request, db):
-    token = request.headers.get("Authorization")
-    if not token:
-        return jsonify({"error" : "Unauthorized🫸. Token Required"}), 401
     
-    user_id = decode_jwt_token(token)
+    user_id = get_token_from_cookies()
     if not user_id:
-        return jsonify({"error": "Invalid or expired token"}), 401
+        return jsonify({"error": "Unauthorized. Token Required"}), 401
     
     users = db["users"]
     user = users.find_one({"_id": ObjectId(user_id)})
@@ -122,9 +120,6 @@ def update_user(request, db):
 
     if not update_data:
         return jsonify({"error": "No fields to update"}), 400
-
-    # Update the user in MongoDB
-    # users.update_one({"email": email}, {"$set": update_data})
     
     users.update_one({"_id": ObjectId(user_id)}, {"$set": update_data})
     return jsonify({"message": update_messages}), 200

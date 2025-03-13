@@ -1,6 +1,7 @@
 import jwt
 import datetime
 from bson import ObjectId
+from flask import request
 from werkzeug.security import generate_password_hash, check_password_hash
 
 SECRET_KEY = "mhdsf vcne fj  vs dvhehrhujqiwja  j   hfhwhbs  shbfu92bhwisvf9"
@@ -30,5 +31,12 @@ def decode_jwt_token(token):
         return None
     except jwt.InvalidTokenError:
         return None
+def get_token_from_cookies():
+    token = request.cookies.get("jwt")
+    if not token:
+        return None
+    return decode_jwt_token(token)
+    
+      
 
 
