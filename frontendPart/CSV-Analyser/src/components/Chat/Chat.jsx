@@ -1,29 +1,42 @@
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import ChatInput from "./ChatInput";
 import "./Chat.css";
 import ChatComponent from "./ChatComponent";
 import { useDispatch, useSelector } from "react-redux";
 import {  clearChat } from "@/Store/chat";
-
+import { Bot } from 'lucide-react';
 const Chat = () => {
 
 
 
   const allChats = useSelector((store) => store.chat);
   const dispatch = useDispatch();
-
-  
+  const [loading, setLoading] = useState(false);
+  console.log(loading)
 
   return (
     <div className="h-[89vh] w-full flex flex-col justify-center items-center relative">
       {allChats.length === 0 ? (
         <div className=" w-full flex justify-center items-center">
-          <ChatInput />
+          
+          <ChatInput setLoading={setLoading} />
+
         </div>
       ) : (
         <div className="h-full w-full flex flex-col gap-9 justify-between items-center m-10">
           <div className="w-[80%] relative overflow-y-auto ">
             <ChatComponent Chats={allChats} />
+            {
+              loading && (
+                  <div className="flex  justify-start" >
+                    <div className={`flex items-start space-x-2 max-w-[80%] 'flex-row' `}>
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center 'bg-gray-100'`}>
+                          <Bot className="w-5 h-5 text-gray-600" />
+                      </div>
+                    </div>
+                    </div>
+                )
+            } 
           </div>
 
           <div className="w-full flex flex-row gap-5 justify-center items-center">
@@ -45,7 +58,7 @@ const Chat = () => {
                 <path d="M12 8v8" />
               </svg>
             </button>  
-            <ChatInput />
+            <ChatInput setLoading={setLoading} />
           </div>
 
         </div>

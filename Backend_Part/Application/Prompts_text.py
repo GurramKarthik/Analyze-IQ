@@ -4,13 +4,14 @@ dashbordPrompt = """
 
     Task:
         Analyze the dataset by considering column types (categorical, numerical, datetime) and relationships between them.
+        Info of each columns of the given data set is {dfInfo}
         Recommend the best visualization types based on the data characteristics.
         Structure the output as a JSON array of objects, where each object represents a graph with:
            - "graph_type": Suggested visualization type (e.g., "scatter", "bar", "line", "histogram", "box", "heatmap", "pie", "treemap", "3d_scatter", "3d_surface", etc.).
            - "x": Column name for the x-axis if applicable.
            - "y": Column name for the y-axis (if applicable).
            - "z": Column for 3D plots (if applicable).
-           - "color": Categorical column for grouping (if applicable).
+           - "color": ( e.g: red, #434980) give me 3 to 4 colors in an array
            - "size": Column for bubble chart sizing (if applicable).
            - "additional_params": Any other necessary attributes (e.g., z-values for heatmaps).
         Graph Recommendation Guidelines:
@@ -24,12 +25,19 @@ dashbordPrompt = """
            - If the dataset represents hierarchical data, suggest treemaps.
            - If a dataset has structured spatial/numerical relationships, consider 3D surface plots (if applicable).
         Example Output Format:
-        - An array containing objects which has graph_type , x, y(if applicable), and other parameters (if applicable)
+            - an array containing objects and each should have the bellow key value pairs
+                  - title : name of the graph
+                  - graph_type : scatter or other.
+                  - x : column Name
+                  - y (if applicable) :  column Name               
+                  - z (if applicable) : column Name
+                  - color :  give me 3 to 4 colors in an array
         Output Rules:
            - The response MUST be a valid JSON array (no extra text).
            - Do NOT generate actual Plotly code—only metadata.
            - If heatmaps, treemaps, or 3D graphs are applicable, include them naturally (but do not force them).
            - Prioritize a diverse set of visualizations to cover different insights.
-           - Give me maxpossible graphs
+           - Don't always give scatter plot or line plot for two numairacle variables, include other possible ghraphs
+           - Give me sensible combination of possible graphs atleast 10 not greater than 17.
            - No preamble is required
 """

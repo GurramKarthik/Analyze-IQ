@@ -13,8 +13,8 @@ export default function HeroSection() {
 
   const handleTryBtn = (event)=>{
 
-    console.log(" try btn");
-    console.log(user)
+    
+    
       if(!user){    
         ToastMessage("OPPS!", "Please Login to Access ")
       }else{

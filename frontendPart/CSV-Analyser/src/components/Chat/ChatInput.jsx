@@ -1,36 +1,42 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { addChat } from "@/Store/chat";
 import { ToastMessage } from "../Home/ToastMessage";
 import axios from "axios";
 import { BACKEND_END_POINT } from "@/utils/Constants";
 import { useDispatch, useSelector } from "react-redux";
+import { store } from "@/Store";
 
 
-const ChatInput = () => {
+const ChatInput = ( {setLoading} ) => {
 
-
+  // console.log(setLoading)
   const allChats = useSelector((store) => store.chat);
+  const {fileURL} = useSelector(store => store.fileURL)
   const dispatch = useDispatch();
+  
 
   const newMessage = useRef(null);
 
-  console.log(allChats);
+
 
   const handleSend = async (e) => {
     e.preventDefault();
 
-    console.log("called")
 
-  
+
 
     try {
+      
+      setLoading(true)
+
       if (!newMessage.current.value.trim()) return;
     
       const message = {
         id: allChats.length + 1,
         text: newMessage.current.value,
         sender: "user",
+        answerFormat : ""
       };
   
       newMessage.current.value = "";
@@ -38,8 +44,8 @@ const ChatInput = () => {
 
       const req = 
         {
-          "email": "mahi7@example.com",
-          "query": message.text
+          "query": message.text,
+           "file_url": fileURL
         }
       
 
@@ -48,9 +54,7 @@ const ChatInput = () => {
             "Content-Type": "application/json",
           },
             withCredentials: true,
-          }).catch((error)=>{
-              ToastMessage(error.response.data   );
-          })  
+          })
           
 
           console.log(response.data)
@@ -60,18 +64,22 @@ const ChatInput = () => {
               id: allChats.length + 2,
               text: response.data.answer,
               sender: "bot",
+              answerFormat: response.data.answerFormat
             };
+            console.log("Bot answer formate  is: ",response.data.answerFormat);
+            console.log("Bot answer is: ",response.data.answer);
             
             dispatch(addChat(botResponse));
 
+        }else{
+            ToastMessage("Error", response.data.message);
         }
 
     } catch (error) {
         ToastMessage("Error", error.message);
+    }finally{
+      setLoading( false )
     }
-
-
-
   };
 
   return (

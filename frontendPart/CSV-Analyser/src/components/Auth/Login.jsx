@@ -33,7 +33,6 @@ const Login = ({setFlag}) => {
 
         setLoading(true)
   
-        
         const userDetails = { 
           email : emailRef.current.value,
           password : passwordRef.current.value

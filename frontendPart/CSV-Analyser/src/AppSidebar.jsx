@@ -1,19 +1,7 @@
 import { Calendar, Home, Inbox, Search, Settings, ChartPie, BotMessageSquare , FileChartColumnIncreasing  } from "lucide-react"
-
-
-
-
-import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar"
-
+import { Sidebar, SidebarContent, SidebarGroup, SidebarGroupContent, SidebarGroupLabel, SidebarMenu, SidebarMenuButton,  SidebarMenuItem,} from "@/components/ui/sidebar"
+import { Link } from "react-router-dom";
+import { useSelector } from "react-redux";
 // Menu items.
 const items = [
   {
@@ -33,20 +21,13 @@ const items = [
   },
 ]
 
-const files = [
-    {
-        title:"File 1",
-        url:"files",
-        
-    },
-    {
-        title:"File 2",
-        url:"files",
-    },
 
-]
+
+
 
 export default function AppSidebar() {
+  const {user} = useSelector(store => store.user)
+  const files = user.files
   return (
     <Sidebar>
       <SidebarContent>
@@ -57,10 +38,10 @@ export default function AppSidebar() {
               {items.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url}>
+                    <Link to={item.url}>
                       <item.icon />
                       <span>{item.title}</span>
-                    </a>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -70,12 +51,12 @@ export default function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               {files.map((item) => (
-                <SidebarMenuItem key={item.title}>
+                <SidebarMenuItem key={item.filename}>
                   <SidebarMenuButton asChild>
-                    <a href={item.url}>
-                      <FileChartColumnIncreasing/>
-                      <span>{item.title}</span>
-                    </a>
+                    <Link to={"files"} state={{ url: item.url }} >
+                      <FileChartColumnIncreasing />
+                      <span>{item.filename}</span>
+                    </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
               ))}
@@ -84,5 +65,6 @@ export default function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
     </Sidebar>
-  )
+  );
 }
+

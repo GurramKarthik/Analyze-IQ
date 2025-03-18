@@ -2,6 +2,8 @@ import React from 'react'
 import { Bot, User } from 'lucide-react';
 
 const ChatComponent = ({Chats}) => {
+
+
   return (
     < >
         {Chats.map((message) => (
@@ -22,7 +24,6 @@ const ChatComponent = ({Chats}) => {
                 }
               </div>
 
-              
               <div
                 className={`rounded-lg p-3 mt-2 Messagebox  ${
                   message.sender === 'user'
@@ -30,7 +31,7 @@ const ChatComponent = ({Chats}) => {
                     : 'bg-background-100 text-background-900'
                 }`}
               >
-                <p>{message.text}</p>
+               <div>{renderMessageContent(message)}</div>
                 <span className={`text-xs ${
                   message.sender === 'user' ? 'text-blue-100' : 'text-gray-500'
                 }`}>
@@ -42,5 +43,52 @@ const ChatComponent = ({Chats}) => {
       </>
   )
 }
+
+
+const renderMessageContent = (message) => {
+  if (message.answerFormat === "table") {
+    if (Array.isArray(message.text) && message.text.length > 0) {
+      const headers = Object.keys(message.text[0]); // Extract column names
+
+      return (
+        <table border="1">
+          <thead>
+            <tr>
+              {headers.map((header, index) => (
+                <th key={index}>{header}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {message.text.map((row, rowIndex) => (
+              <tr key={rowIndex}>
+                {headers.map((header, colIndex) => (
+                  <td key={colIndex}>{row[header]}</td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      );
+    }
+  } else if (message.answerFormat === "list") {
+    return (
+      <ul>
+        {Array.isArray(message.text)
+          ? message.text.map((item, index) => <li key={index}>{item}</li>)
+          : Object.entries(message.text).map(([key, value], index) => (
+              <li key={index}>
+                <strong>{key}:</strong> {value}
+              </li>
+            ))}
+      </ul>
+    );
+  } else {
+    return <p>{message.text}</p>; // Default plain text
+  }
+};
+
+
+
 
 export default ChatComponent

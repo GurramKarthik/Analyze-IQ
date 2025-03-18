@@ -1,141 +1,111 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Plot from "react-plotly.js";
-import Papa from "papaparse";
+import { db } from "@/workers/WebWorker.js";
 
-const ChartVisualizer = () => {
-  const [data, setData] = useState([]);
-  const [columns, setColumns] = useState([]);
-  const fileInput = useRef(null);
+const Graph = ({ data }) => {
+    const [plotData, setPlotData] = useState([]);
+    const [graphTitle, setGraphTitle] = useState("Dynamic Graph");
 
-  const handleFileUpload = (event) => {
-    event.preventDefault();
+    useEffect(() => {
+        async function fetchData() {
+            let { x, y, z, values, labels, graph_type, title, color } = data;
 
-    const file = fileInput.current.files[0];
-    Papa.parse(file, {
-      header: true,
-      complete: (results) => {
-        setData(results.data);
-        setColumns(Object.keys(results.data[0]));
-      },
-    });
-  };
+            // Fetch data from IndexedDB
+            const xData = x ? await db.columnStore.get(x) : null;
+            const yData = y ? await db.columnStore.get(y) : null;
+            const zData = z ? await db.columnStore.get(z) : null;
+            
 
-  const generateCharts = () => {
-    const charts = [];
+            // Extract values
+            const xValues = xData ? xData.values : [];
+            const yValues = yData ? yData.values : [];
+            const zValues = zData ? zData.values : [];
+            
 
+            // Assign colors dynamically
+            const assignedColors = color ? xValues.map((_, i) => color[i % color.length]) : undefined;
 
-    const numericColumns = columns.filter((col) => !isNaN(data[0][col]));
+            let graph = {};
 
-    
-    for (let i = 0; i < numericColumns.length; i++) {
-      for (let j = i + 1; j < numericColumns.length; j++) {
-        charts.push(
-          <div key={`scatter-${i}-${j}`} className="w-full md:w-1/2 p-4">
+            // Handle different graph types
+            switch (graph_type) {
+                case "histogram":
+                    graph = {
+                        type: "histogram",
+                        x: xValues,
+                        marker: { color: assignedColors },
+                    };
+                    break;
+
+                case "bar":
+                    graph = {
+                        type: "bar",
+                        x: xValues,
+                        y: yValues,
+                        marker: { color: assignedColors },
+                    };
+                    break;
+
+                case "scatter":
+                    graph = {
+                        type: "scatter",
+                        mode: "markers",
+                        x: xValues,
+                        y: yValues.length ? yValues : new Array(xValues.length).fill(1), // Default y if missing
+                        marker: { color: assignedColors, size: 8 },
+                    };
+                    break;
+
+                case "pie":
+                    graph = {
+                        type: "pie",
+                        values: values,
+                        labels: labels,
+                        marker: { colors: assignedColors },
+                        hole: 0.4, 
+                    };
+                    break;
+
+                case "heatmap":
+                    graph = {
+                        type: "heatmap",
+                        z: zValues,
+                        x: xValues,
+                        y: yValues,
+                        colorscale: "Viridis",
+                    };
+                    break;
+
+                case "treemap":
+                    graph = {
+                        type: "treemap",
+                        labels: labelsArr.length ? labelsArr : xValues,
+                        parents: yValues.length ? yValues : undefined,
+                        values: valuesArr.length ? valuesArr : undefined,
+                        marker: { colors: assignedColors },
+                    };
+                    break;
+
+                default:
+                    console.warn(`Unsupported graph type: ${graph_type}`);
+                    return;
+            }
+
+            setPlotData([graph]);
+            if (title) setGraphTitle(title);
+        }
+
+        fetchData();
+    }, [data]);
+
+    return (
+        <div className="flex flex-col justify-center items-center">
             <Plot
-              data={[
-                {
-                  x: data.map((row) => row[numericColumns[i]]),
-                  y: data.map((row) => row[numericColumns[j]]),
-                  type: "scatter",
-                  mode: "markers",
-                  name: `${numericColumns[i]} vs ${numericColumns[j]}`,
-                  marker: {
-                    color: data.map(
-                      (_, index) => ["#FF6F61", "#6B5B95", "#88B04B"][index % 3]
-                    ), // Cycle through 3 colors
-                    size: 8,
-                    opacity: 0.8,
-                  },
-                },
-              ]}
-              layout={{
-                title: `${numericColumns[i]} vs ${numericColumns[j]}`,
-                width: 500,
-                height: 400,
-                plot_bgcolor: "#F3F4F6", 
-                paper_bgcolor: "#FFFFFF",
-              }}
+                data={plotData}
+                layout={{ width: 440, height: 380, title: graphTitle }}
             />
-          </div>
-        );
-      }
-    }
-
-    
-    numericColumns.forEach((col) => {
-      charts.push(
-        <div key={`bar-${col}`} className="w-full md:w-1/2 p-4">
-          <Plot
-            data={[
-              {
-                x: data.map((_, i) => i),
-                y: data.map((row) => row[col]),
-                type: "bar",
-                name: col,
-                marker: {
-                  color: data.map(
-                    (_, index) => ["#FF6F61", "#6B5B95", "#88B04B"][index % 3]
-                  ), 
-                  opacity: 0.8,
-                },
-              },
-            ]}
-            layout={{
-              title: `Bar Chart - ${col}`,
-              width: 500,
-              height: 400,
-              plot_bgcolor: "#F3F4F6", // Light gray background for better contrast
-              paper_bgcolor: "#FFFFFF",
-              xaxis: { title: "Index", tickangle: -45 },
-              yaxis: { title: col },
-            }}
-          />
         </div>
-      );
-    });
-
-    // Box plots for numeric columns
-    numericColumns.forEach((col) => {
-      charts.push(
-        <div key={`box-${col}`} className="w-full md:w-1/2 p-4">
-          <Plot
-            data={[
-              {
-                y: data.map((row) => row[col]),
-                type: "box",
-                name: col,
-              },
-            ]}
-            layout={{
-              title: `Box Plot - ${col}`,
-              width: 500,
-              height: 400,
-            }}
-          />
-        </div>
-      );
-    });
-
-    return charts;
-  };
-
-  return (
-    <div className="p-4">
-      <form onSubmit={handleFileUpload}>
-        <input
-          type="file"
-          accept=".csv"
-          className="mb-4 p->2 border rounded"
-          ref={fileInput}
-        />
-        <button>Submit</button>
-      </form>
-
-      {data.length > 0 && (
-        <div className="flex flex-wrap -mx-4">{generateCharts()}</div>
-      )}
-    </div>
-  );
+    );
 };
 
-export default ChartVisualizer;
+export default Graph;

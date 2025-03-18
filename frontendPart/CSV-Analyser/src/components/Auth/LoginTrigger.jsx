@@ -18,6 +18,9 @@ import { BACKEND_END_POINT } from "@/utils/Constants";
 import { useState } from "react";
 import { clearChat } from "@/Store/chat";
 import { persistor } from "@/main";
+import { clearMetaData } from "@/Store/Metadata";
+import { clearDataURL } from "@/Store/Dataframe";
+import { clearCSVData } from "@/workers/WebWorker";
 
 export default function LoginTrigger() {
   const navigate = useNavigate();
@@ -29,18 +32,22 @@ export default function LoginTrigger() {
       const response = await axios.get(`${BACKEND_END_POINT}/logout`, {
         withCredentials: true,
       }).catch((error) => {
-        ToastMessage("Error", error.response.data.message || "An error occurred while Logging OUT! ");
+        ToastMessage("Error", "An error occurred while Logging OUT! ");
       });
 
+      
       if (response.data.success) {
         ToastMessage("Logged out", "You have successfully logged out");
         dispatch(setUser(null));
-        dispatch(clearChat([]));
+        dispatch(clearChat());
+        dispatch(clearMetaData());
+        dispatch(clearDataURL());
+        clearCSVData(); // clearing the data stored in the indexedDB
         persistor.purge(); 
-        navigate("./auth");
       }
+      navigate("./auth");
     } catch (error) {
-      ToastMessage("Error", error.message);
+      
     }
   };
 

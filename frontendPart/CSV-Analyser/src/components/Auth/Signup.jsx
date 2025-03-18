@@ -61,7 +61,7 @@ const Signup = ({setFlag}) => {
           // opening the login page
             setError("");
             setLoading(false);
-            ToastMessage("Hurray", "Registered Successfully :) Please Logins")
+            ToastMessage("Hurray", "Registered Successfully :) Please Login")
             toast({
               title: "Hurray!",
               description: "Registered Successfully :) Please Login",

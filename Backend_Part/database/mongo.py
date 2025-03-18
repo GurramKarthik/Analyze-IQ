@@ -1,10 +1,19 @@
 from flask_pymongo import PyMongo
+from dotenv import load_dotenv
+load_dotenv()
+import os
 
 mongo = PyMongo()
 
-def init_db(app):
-    """Initialize MongoDB with Flask app."""
-    app.config["MONGO_URI"] = "mongodb+srv://csv:csv123@csvanalyzer.cfplz.mongodb.net/csv_analyzer?retryWrites=true&w=majority"
+def init_db(app):    
+    app.config["MONGO_URI"] = os.getenv("MONGO_URI")
     mongo.init_app(app)
-    return mongo.db  # Return the database instance
+    
+    
+
+
+
+
+
+
 
