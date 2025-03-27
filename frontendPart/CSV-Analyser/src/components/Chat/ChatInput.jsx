@@ -6,7 +6,14 @@ import axios from "axios";
 import { BACKEND_END_POINT } from "@/utils/Constants";
 import { useDispatch, useSelector } from "react-redux";
 import { store } from "@/Store";
-
+import { ChevronDown } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { 
+  DropdownMenu, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuTrigger 
+} from "@/components/ui/dropdown-menu"
 
 const ChatInput = ( {setLoading} ) => {
 
@@ -14,6 +21,7 @@ const ChatInput = ( {setLoading} ) => {
   const allChats = useSelector((store) => store.chat);
   const {fileURL} = useSelector(store => store.fileURL)
   const dispatch = useDispatch();
+  const [chatType, setChatType] = useState('Text')
   
 
   const newMessage = useRef(null);
@@ -22,9 +30,6 @@ const ChatInput = ( {setLoading} ) => {
 
   const handleSend = async (e) => {
     e.preventDefault();
-
-
-
 
     try {
       
@@ -36,7 +41,8 @@ const ChatInput = ( {setLoading} ) => {
         id: allChats.length + 1,
         text: newMessage.current.value,
         sender: "user",
-        answerFormat : ""
+        answerFormat : "", 
+        chatType 
       };
   
       newMessage.current.value = "";
@@ -45,10 +51,10 @@ const ChatInput = ( {setLoading} ) => {
       const req = 
         {
           "query": message.text,
-           "file_url": fileURL
+           "file_url": fileURL, 
+           "chatType":chatType
         }
       
-
         const response = await axios.post(`${BACKEND_END_POINT}/chat`, req, {
           headers: {
             "Content-Type": "application/json",
@@ -66,8 +72,7 @@ const ChatInput = ( {setLoading} ) => {
               sender: "bot",
               answerFormat: response.data.answerFormat
             };
-            console.log("Bot answer formate  is: ",response.data.answerFormat);
-            console.log("Bot answer is: ",response.data.answer);
+            
             
             dispatch(addChat(botResponse));
 
@@ -84,6 +89,33 @@ const ChatInput = ( {setLoading} ) => {
 
   return (
     <form className="flex gap-2 items-center  w-[60%] rounded items-center bg-[#444]" onSubmit={handleSend}>
+
+<DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button 
+          variant="ghost" 
+          className="ml-2 text-white hover:bg-[#555] hover:text-white"
+        >
+          {chatType} <ChevronDown className="ml-1 w-4 h-4" />
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent className="bg-[#333] text-white border-none">
+        <DropdownMenuItem 
+          className="hover:bg-[#444] focus:bg-[#444] cursor-pointer"
+          onSelect={() => setChatType('Text')}
+        >
+          Text
+        </DropdownMenuItem>
+        <DropdownMenuItem 
+          className="hover:bg-[#444] focus:bg-[#444] cursor-pointer"
+          onSelect={() => setChatType('Plot')}
+        >
+          Plot
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
+
+
       <Textarea
         ref={newMessage}
         placeholder="Type your message here."

@@ -18,9 +18,9 @@ import { BACKEND_END_POINT } from "@/utils/Constants";
 import { useState } from "react";
 import { clearChat } from "@/Store/chat";
 import { persistor } from "@/main";
-import { clearMetaData } from "@/Store/Metadata";
+import { clearDashboardData } from "@/Store/Dashboard";
 import { clearDataURL } from "@/Store/Dataframe";
-import { clearCSVData } from "@/workers/WebWorker";
+
 
 export default function LoginTrigger() {
   const navigate = useNavigate();
@@ -40,9 +40,8 @@ export default function LoginTrigger() {
         ToastMessage("Logged out", "You have successfully logged out");
         dispatch(setUser(null));
         dispatch(clearChat());
-        dispatch(clearMetaData());
+        dispatch(clearDashboardData());
         dispatch(clearDataURL());
-        clearCSVData(); // clearing the data stored in the indexedDB
         persistor.purge(); 
       }
       navigate("./auth");

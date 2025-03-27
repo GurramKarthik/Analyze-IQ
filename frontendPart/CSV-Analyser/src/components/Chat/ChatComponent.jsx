@@ -1,5 +1,6 @@
 import React from 'react'
 import { Bot, User } from 'lucide-react';
+import Plot from "react-plotly.js";
 
 const ChatComponent = ({Chats}) => {
 
@@ -83,6 +84,26 @@ const renderMessageContent = (message) => {
             ))}
       </ul>
     );
+  } else if(message.answerFormat === 'Plot') {
+    console.log(message)
+      const plot = JSON.parse(message.text)
+      
+
+      return (
+          <div  className="bg-white rounded-lg shadow">
+                  <div className="p-4" style={{ height: "400px" , width: "400px" }}>
+                    {plot?.data && plot?.layout ? (
+                      <Plot
+                        data={plot.data}
+                        layout={plot.layout}
+                        style={{ width: "100%", height: "100%" }}
+                      />
+                    ) : (
+                      <p>Failed to load graph</p>
+                    )}
+                  </div>
+                </div>
+      )
   } else {
     return <p>{message.text}</p>; // Default plain text
   }

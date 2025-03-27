@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+            padding: 20px;
+        }
+        .chart-container {
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px #ddd;
+            padding: 15px;
+            border-radius: 10px;
+        }
+    </style>
+    <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+</head>
+<body>
+<div class="container">
+    <div class="chart-container" id="graph1"></div>
+    <div class="chart-container" id="graph2"></div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const graph1 = JSON.parse('{{ graph1_json }}');
+        const graph2 = JSON.parse('{{ graph2_json }}');
+
+        Plotly.newPlot('graph1', graph1.data, graph1.layout);
+        Plotly.newPlot('graph2', graph2.data, graph2.layout);
+    });
+</script>
+</body>
+</html>

@@ -27,7 +27,7 @@ const items = [
 
 export default function AppSidebar() {
   const {user} = useSelector(store => store.user)
-  const files = user.files
+  const files = user?.files
   return (
     <Sidebar>
       <SidebarContent>
@@ -50,7 +50,7 @@ export default function AppSidebar() {
           <SidebarGroupLabel>Files</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
-              {files.map((item) => (
+              {files?.map((item) => (
                 <SidebarMenuItem key={item.filename}>
                   <SidebarMenuButton asChild>
                     <Link to={"files"} state={{ url: item.url }} >

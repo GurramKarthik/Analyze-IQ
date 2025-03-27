@@ -7,7 +7,7 @@ import {  clearChat } from "@/Store/chat";
 import { Bot } from 'lucide-react';
 const Chat = () => {
 
-
+ 
 
   const allChats = useSelector((store) => store.chat);
   const dispatch = useDispatch();
@@ -24,7 +24,7 @@ const Chat = () => {
         </div>
       ) : (
         <div className="h-full w-full flex flex-col gap-9 justify-between items-center m-10">
-          <div className="w-[80%] relative overflow-y-auto ">
+          <div className="w-[100%] relative overflow-y-auto ">
             <ChatComponent Chats={allChats} />
             {
               loading && (

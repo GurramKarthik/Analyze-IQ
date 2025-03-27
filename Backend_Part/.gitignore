@@ -27,3 +27,11 @@ myenv/
 #Ignore logs and temparory files
 pandasai.log
 temp.csv
+
+# igmore ipynb
+test.ipynb
+final.ipynb
+
+# ignore sample dataset
+hotel_bookings.csv
+temp_chart.png

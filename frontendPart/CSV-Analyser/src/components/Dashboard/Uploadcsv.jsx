@@ -4,6 +4,8 @@ import { BACKEND_END_POINT } from '@/utils/Constants';
 import { ToastMessage } from '../Home/ToastMessage';
 import { setDataURL } from '@/Store/Dataframe';
 import { useDispatch, useSelector } from 'react-redux';
+import { setUser } from '@/Store/User';
+import { store } from '@/Store';
 
 
 const Uploadcsv = () => {
@@ -12,6 +14,10 @@ const Uploadcsv = () => {
     const dispatch = useDispatch();
     const [loading, setLoading ] = useState(false);
     const [fileName, setFileName] = useState("No file selected");
+    const {user} =  useSelector(store => store.user)
+
+    
+    
     
 
     const handleFileChange = (event) => {
@@ -40,8 +46,16 @@ const Uploadcsv = () => {
             })
 
             if(response.data.success){
+              if(response.data.message === "large") { 
+
+                dispatch(setDataURL("large"))
+                ToastMessage("File is large", "You can use temporarily")
+                return
+              } 
               console.log("response ", response)
                 dispatch(setDataURL(response.data.file_url))
+                user.files.push({ "filename" : fileName ,"url" :response.data.file_url })
+                dispatch(setUser(user))
                 ToastMessage("", "Your file has been uploaded")
             }else{
                 ToastMessage("Error", response.data.message)
@@ -49,7 +63,7 @@ const Uploadcsv = () => {
             
             
         }catch (error) {
-            ToastMessage("Error", err.message)
+            ToastMessage("Error", error.message)
         }finally{
           setLoading(false)
         }

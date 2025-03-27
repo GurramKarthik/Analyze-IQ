@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import ThemeProvider from "./components/theme-provider";
 import "./App.css";
@@ -19,10 +19,14 @@ const App = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch()
+
+  useEffect(() =>{
+    if(!fileURL && user.files.length>0 ){
+      dispatch(setDataURL(user.files[0].url))
+    }
+  }, [])
   
-  if(!fileURL && user.files.length>0 ){
-    dispatch(setDataURL(user.files[0].url))
-  }
+  
   useLoadData();
   
   return (

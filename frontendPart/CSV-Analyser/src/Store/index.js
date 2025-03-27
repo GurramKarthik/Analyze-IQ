@@ -2,7 +2,7 @@ import {combineReducers,configureStore} from "@reduxjs/toolkit"
 import userSlice from "./User"
 import chatSlice from "./chat"
 import dataframeSlice from "./Dataframe"
-import MetaDataSlice from "./Metadata"
+import dashboardDataSlice from "./Dashboard"
 import {
     persistReducer,
     FLUSH,
@@ -26,7 +26,7 @@ import autoMergeLevel2 from "redux-persist/es/stateReconciler/autoMergeLevel2"
     user: userSlice,
     chat: chatSlice,
     fileURL: dataframeSlice,
-    graphMetaData : MetaDataSlice
+    dashboardHtml : dashboardDataSlice
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
@@ -36,8 +36,13 @@ export const store = configureStore({
     reducer: persistedReducer,
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
-         serializableCheck: {
+        //  serializableCheck: {
+        //   ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        // },
+        serializableCheck: {
           ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+          immutableCheck: false,  
+          serializableCheck: false 
         },
     }),
 });

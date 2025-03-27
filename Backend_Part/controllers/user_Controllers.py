@@ -3,6 +3,7 @@ from utils.jwt_utils import generate_jwt_token, hash_password, verify_password
 import cloudinary.uploader
 from flask import  jsonify
 from database.mongo import mongo
+import pandas as pd
 
 def getDB():
     return mongo.db
@@ -111,31 +112,61 @@ def update_user(request, user):
     except Exception as e:
         return jsonify({"success":False, "message": str(e)}), 200
     
-
-def FileUpload(request, user):  
+def FileUpload(request, user, instances):  
     try:
+        print("file upload......")
+        print("file upload......")
+        print("file upload......")
+        print("file upload......")
+        print("file upload......")
+        print("Request files:", request.files)
         if "file" not in request.files:
             return jsonify({"success": False, "error": "No file part in request"}), 400
 
+        print("file upload111111111......")
         file = request.files["file"]
+        print("Getting the file......")
 
         if not file or file.filename.strip() == "":
-            return jsonify({ "success":False, "message": "Please provide a file in CSV format."}), 400
-                
+            return jsonify({"success": False, "message": "Please provide a file in CSV format."}), 400
+
+        print("Calculating file size......")
+        file.seek(0, 2)
+        file_size = file.tell()
+        file.seek(0)
+        
+        file_size_mb = file_size / (1024 * 1024)
+
+        if file_size_mb > 10:
+            print("File is large (>10 MB)")
+            file.seek(0)  # Reset cursor before reading
+            instances['df'] = pd.read_csv(file)
+            return jsonify({"success": True, "message": "large"}), 200
+
+        print("Uploading file to Cloudinary......")
         try:
+            cloudinary_config = cloudinary.config()
+            print("Cloudinary Config:", cloudinary_config)
+
             upload_result = cloudinary.uploader.upload(file, resource_type="raw")
+            print("Upload result:", upload_result)
+
             file_url = upload_result.get("secure_url")
             if not file_url:
                 raise ValueError("Cloudinary did not return a file URL")
         except Exception as e:
-            return jsonify({"success":False, "message": "Unexpected error during file upload", "details": str(e)}), 500
-        
-        db = getDB()
-        db["users"].update_one(
-            {"email": user["email"]},
-            {"$push": {"files": {"filename": file.filename, "url": file_url}}}
-        )
-        return jsonify({"success":True, "message": "File uploaded successfully", "file_url": file_url}), 200
-    except Exception as e:
-        return jsonify({"success":False, "message": str(e)}), 200
+            print("Error in file upload:", str(e))
+            return jsonify({"success": False, "message": "Error while uploading the CSV", "details": str(e)}), 500
 
+        if file_url:
+            db = getDB()
+            db["users"].update_one(
+                {"email": user["email"]},
+                {"$push": {"files": {"filename": file.filename, "url": file_url}}}
+            )
+
+        return jsonify({"success": True, "message": "File uploaded successfully", "file_url": file_url}), 200
+
+    except Exception as e:
+        print("Unexpected error:", str(e))
+        return jsonify({"success": False, "message": str(e)}), 500
