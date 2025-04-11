@@ -119,38 +119,33 @@ def FileUpload(request, user, instances):
         print("file upload......")
         print("file upload......")
         print("file upload......")
-        print("Request files:", request.files)
+        # Check if file part exists
         if "file" not in request.files:
             return jsonify({"success": False, "error": "No file part in request"}), 400
 
-        print("file upload111111111......")
         file = request.files["file"]
-        print("Getting the file......")
+        file_size_mb = float(request.form.get('size', 0))  
 
+        print("2")
         if not file or file.filename.strip() == "":
             return jsonify({"success": False, "message": "Please provide a file in CSV format."}), 400
 
-        print("Calculating file size......")
-        file.seek(0, 2)
-        file_size = file.tell()
-        file.seek(0)
-        
-        file_size_mb = file_size / (1024 * 1024)
-
+        print("3")
         if file_size_mb > 10:
             print("File is large (>10 MB)")
-            file.seek(0)  # Reset cursor before reading
             instances['df'] = pd.read_csv(file)
+            print("df changed. at file")
             return jsonify({"success": True, "message": "large"}), 200
 
+        print("4")
         print("Uploading file to Cloudinary......")
         try:
             cloudinary_config = cloudinary.config()
             print("Cloudinary Config:", cloudinary_config)
-
+            print("five")
             upload_result = cloudinary.uploader.upload(file, resource_type="raw")
             print("Upload result:", upload_result)
-
+            print("six")
             file_url = upload_result.get("secure_url")
             if not file_url:
                 raise ValueError("Cloudinary did not return a file URL")
@@ -158,6 +153,7 @@ def FileUpload(request, user, instances):
             print("Error in file upload:", str(e))
             return jsonify({"success": False, "message": "Error while uploading the CSV", "details": str(e)}), 500
 
+        print("7")
         if file_url:
             db = getDB()
             db["users"].update_one(

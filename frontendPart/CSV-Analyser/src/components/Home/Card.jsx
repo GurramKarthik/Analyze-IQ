@@ -1,4 +1,3 @@
-"use client";
 import { MagicCard } from "../magicui/magic-card";
 
 

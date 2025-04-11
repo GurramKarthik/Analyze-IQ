@@ -11,7 +11,7 @@ def Dashborad(user, request, instances, analysis_results):
             print("setDta")
             setDataframe(user, request, instances, analysis_results)
 
-        # plotGraphs(instances, analysis_results)
+        plotGraphs(instances, analysis_results)
     
         # Now jsonify will work
         response = jsonify( {"success":True, "results" : analysis_results.get('results')})

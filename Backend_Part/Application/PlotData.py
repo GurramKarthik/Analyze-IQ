@@ -178,10 +178,10 @@ def plotGraphs(instances, analysis_results):
                     result = pd.DataFrame(result, columns=result.columns)
                     params = {**finalMeta[i], 'x': result.columns[0]}
                     filtered_params = filter_valid_plotly_params(metaData[i]['graphType'], params, result)
-                    fig = getattr(px, metaData[i]['graphType'])(result, **filtered_params)
+                    fig = getattr(px, metaData[i]['graphType'].lower())(result, **filtered_params)
                 else:
                     filtered_params = filter_valid_plotly_params(metaData[i]['graphType'], finalMeta[i], instances.get('df'))
-                    fig = getattr(px, metaData[i]['graphType'])(instances.get('df'), **filtered_params)
+                    fig = getattr(px, metaData[i]['graphType'].lower())(instances.get('df'), **filtered_params)
                 
                 graph_json = plotly.utils.PlotlyJSONEncoder().encode(fig)
                 plots.append(graph_json)

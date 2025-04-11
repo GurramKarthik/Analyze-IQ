@@ -23,7 +23,7 @@ export default function HeroSection() {
   }
 
   return (
-    <div className="relative flex h-[100vh] w-full flex-col items-center justify-center overflow-hidden bg-background md:shadow-xl z-[0]">
+    <div className="relative flex h-[100vh] w-full flex-col items-center justify-center overflow-hidden bg-background  z-[0]">
      
      <InteractiveGridPattern
         className={cn(

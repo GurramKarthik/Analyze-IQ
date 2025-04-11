@@ -8,6 +8,8 @@ import Card from './Card'
 import Beam from './Beam'
 import Example from './Example'
 import Footer from './Footer'
+import  flowImage from "../../assets/forwebsite.svg"
+import SpinningEcosystem from './spin'
 
 
 
@@ -36,11 +38,23 @@ const Home = () => {
     <div className=''>
         <HeroSection/>
         {/* flex h-[500px] flex-col gap-4 lg:h-[250px] lg:flex-row justify-between p-3 mt-10  */}
-        <div className="flex wrap gap-2 justify-between pl-3 pr-3" id='cardview'  >
+        {/* <div className="flex wrap gap-2 justify-between pl-3 pr-3" id='cardview'  >
             <Card title={"What Can CSV-Analyser Do?"} details={what} />
             <Card title={"Key Features"} details={feature}/>
             <Card title={"Why Choose CSV-Analyser?"} details={why}/>
+        </div> */}
+
+        <div className='flex flex-row gap-3'>
+          <div>
+            <img src={flowImage} style={{transform:"scale(1)"}}></img>
+          </div>
+          <div></div>
+          <div></div>
         </div>
+
+
+        <SpinningEcosystem/>
+  
         <Beam/>
         <Example/>
         <hr className='mr-4 mt-2' />

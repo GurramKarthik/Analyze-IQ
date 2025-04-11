@@ -4,6 +4,7 @@ from Application.routes import setup_routes  # Import the route setup function
 from flask_cors import CORS
 
 app = Flask(__name__)
+app.config['MAX_CONTENT_LENGTH'] = 100 * 1024 * 1024
 
 CORS(app, supports_credentials=True, origins=["http://localhost:5173"])
 

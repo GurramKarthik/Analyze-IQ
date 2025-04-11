@@ -1,5 +1,5 @@
 import React, { memo, useState, useRef, useEffect } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { FixedSizeGrid as Grid } from "react-window";
 import AutoSizer from "react-virtualized-auto-sizer";
@@ -9,14 +9,20 @@ import { ToastMessage } from "../Home/ToastMessage";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Button } from "../ui/button";
 import TableSkeleton from "./TableSkeleton";
+import { useDispatch } from "react-redux";
+import { setDataURL } from "@/Store/Dataframe";
+
 
 const File = memo(() => {
   const location = useLocation();
   const fileUrl = location.state?.url;
+  
+  const dispatch = useDispatch();
+  const navigate  = useNavigate();
 
   const [columns, setColumns] = useState([]);
   const [rows, setRows] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   
   const startRow = useRef(0);
   const next = useRef(true);
@@ -69,6 +75,7 @@ const File = memo(() => {
       : String(ele);
 
     return (
+      
       <TooltipProvider>
         <Tooltip>
           <TooltipTrigger asChild>
@@ -90,8 +97,10 @@ const File = memo(() => {
   if (loading) return <TableSkeleton />;
 
   return (
+    <>
     <div className="flex flex-col h-[96vh] p-4">
       {/* Table Container */}
+      <Button className='fixed right-[20vmin] top-[4vmin] z-10 ' onClick={ () =>{ dispatch(setDataURL(fileUrl)); ToastMessage("Analysing the file...."); navigate('/dashboard') }}> Analyse this File </Button>
       <div className="flex-grow overflow-hidden mb-4">
         <AutoSizer>
           {({ height, width }) => (
@@ -140,6 +149,7 @@ const File = memo(() => {
         )}
       </div>
     </div>
+    </>
   );
 });
 

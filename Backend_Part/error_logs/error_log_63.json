@@ -1,0 +1,72 @@
+{
+    "error_message": "Failed to extract JSON: Extra data: line 1 column 58 (char 57)",
+    "metaData": [
+        {
+            "graphType": "Scatter",
+            "title": "Temperature vs DewPoint Over Time"
+        },
+        {
+            "graphType": "Line",
+            "title": "Temperature and DewPoint Trend Over Time"
+        },
+        {
+            "graphType": "Bar",
+            "title": "Pressure Distribution Over Time"
+        },
+        {
+            "graphType": "Heatmap",
+            "title": "Temperature and DewPoint Correlation"
+        },
+        {
+            "graphType": "Histogram",
+            "title": "Temperature and DewPoint Distribution"
+        }
+    ],
+    "finalMeta": [
+        {
+            "x": "Date_Time",
+            "y": "DewPoint",
+            "color": "Temperature",
+            "title": "Temperature vs DewPoint Over Time"
+        },
+        {
+            "x": "Date_Time",
+            "y": [
+                "Temperature",
+                "DewPoint"
+            ]
+        },
+        {
+            "x": "Date_Time",
+            "y": "Pressure",
+            "title": "Pressure Distribution Over Time",
+            "color_discrete_sequence": [
+                "#1F77B4",
+                "#FF7F0E",
+                "#2CA02C",
+                "#D62728",
+                "#9467BD",
+                "#8C564B",
+                "#E377C2",
+                "#7F7F7F",
+                "#BCBD22",
+                "#17BECF"
+            ]
+        },
+        {
+            "x": "Temperature",
+            "y": "DewPoint",
+            "z": [
+                [
+                    1.0,
+                    0.8727727759507168
+                ],
+                [
+                    0.8727727759507168,
+                    1.0
+                ]
+            ],
+            "colorscale": "Viridis"
+        }
+    ]
+}

@@ -21,8 +21,8 @@ const App = () => {
   const dispatch = useDispatch()
 
   useEffect(() =>{
-    if(!fileURL && user.files.length>0 ){
-      dispatch(setDataURL(user.files[0].url))
+    if(!fileURL && user?.files?.length>0 ){
+      dispatch(setDataURL(user?.files[user?.files?.length-2].url))
     }
   }, [])
   

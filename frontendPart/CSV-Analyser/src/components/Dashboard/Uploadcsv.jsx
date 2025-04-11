@@ -34,6 +34,10 @@ const Uploadcsv = () => {
         try {        
             const formData = new FormData();
             formData.append("file", inputFile.current.files[0]);
+            
+            const sizeInMB = (inputFile.current.files[0].size / (1024 * 1024)).toFixed(2);
+            console.log("size: ", sizeInMB)
+            formData.append("size", sizeInMB);
 
             const response = await axios.post(`${BACKEND_END_POINT}/upload`, formData, {
                 headers:{

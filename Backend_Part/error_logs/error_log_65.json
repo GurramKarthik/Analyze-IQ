@@ -1,0 +1,39 @@
+{
+    "error_message": "Failed to extract JSON: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)",
+    "metaData": [
+        {
+            "graphType": "line",
+            "title": "Temperature and DewPoint Over Time"
+        },
+        {
+            "graphType": "scatter",
+            "title": "Relationship Between Temperature and DewPoint"
+        },
+        {
+            "graphType": "bar",
+            "title": "Pressure Distribution Over Time"
+        },
+        {
+            "graphType": "histogram",
+            "title": "Temperature Distribution"
+        },
+        {
+            "graphType": "area",
+            "title": "Cumulative Temperature and DewPoint Over Time"
+        }
+    ],
+    "finalMeta": [
+        {
+            "x": "Date_Time",
+            "y": [
+                "Temperature",
+                "DewPoint"
+            ]
+        },
+        {
+            "x": "DewPoint",
+            "y": "Temperature",
+            "title": "Relationship Between Temperature and DewPoint"
+        }
+    ]
+}

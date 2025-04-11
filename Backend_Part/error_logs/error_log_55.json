@@ -1,0 +1,49 @@
+{
+    "error_message": "Failed to extract JSON: Expecting property name enclosed in double quotes: line 1 column 2 (char 1)",
+    "metaData": [
+        {
+            "graphType": "scatter_mapbox",
+            "title": "Meteorite Falls by Location"
+        },
+        {
+            "graphType": "bar",
+            "title": "Top 10 Meteorites by Mass"
+        },
+        {
+            "graphType": "histogram",
+            "title": "Distribution of Meteorite Mass"
+        },
+        {
+            "graphType": "line",
+            "title": "Number of Meteorite Falls Over Time"
+        },
+        {
+            "graphType": "pie",
+            "title": "Meteorite Types by Class"
+        },
+        {
+            "graphType": "box",
+            "title": "Mass Distribution by Meteorite Type"
+        }
+    ],
+    "finalMeta": [
+        {
+            "x": "name",
+            "y": "mass (g)",
+            "title": "Top 10 Meteorites by Mass"
+        },
+        {
+            "x": "mass (g)",
+            "title": "Distribution of Meteorite Mass",
+            "color_discrete_sequence": [
+                "blue"
+            ],
+            "template": "plotly_white"
+        },
+        {
+            "x": "year",
+            "y": "count",
+            "title": "Number of Meteorite Falls Over Time"
+        }
+    ]
+}
