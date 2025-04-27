@@ -6,10 +6,13 @@ const userSlice = createSlice({
     reducers :{
         setUser : (state, action)=>{
             state.user = action.payload
+        },
+        addFile :(state, action) =>{
+            state.user.files.push(action.payload)
         }
     }
 
 })
 
 export default userSlice.reducer;
-export const {setUser} = userSlice.actions
+export const {setUser, addFile} = userSlice.actions

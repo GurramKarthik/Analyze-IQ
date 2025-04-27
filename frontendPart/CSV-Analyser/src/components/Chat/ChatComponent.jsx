@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Bot, User } from 'lucide-react';
 import Plot from "react-plotly.js";
 
 const ChatComponent = ({Chats}) => {
+
+  
+  
 
 
   return (
@@ -47,6 +50,9 @@ const ChatComponent = ({Chats}) => {
 
 
 const renderMessageContent = (message) => {
+
+  // const [isHovered, setIsHovered] = useState(false);
+
   if (message.answerFormat === "table") {
     if (Array.isArray(message.text) && message.text.length > 0) {
       const headers = Object.keys(message.text[0]); // Extract column names
@@ -88,16 +94,35 @@ const renderMessageContent = (message) => {
     console.log(message)
       const plot = JSON.parse(message.text)
       
+  
+  const handleAddToDashboard = ()=>{
 
-      return (
+
+  }
+        return (
           <div  className="bg-white rounded-lg shadow">
-                  <div className="p-4" style={{ height: "400px" , width: "400px" }}>
+                  <div className="p-4 " style={{ height: "560px" , width: "560px" }}>
                     {plot?.data && plot?.layout ? (
-                      <Plot
-                        data={plot.data}
-                        layout={plot.layout}
-                        style={{ width: "100%", height: "100%" }}
-                      />
+                      <div className='w-full h-full relative'   
+                          onMouseEnter={() => setIsHovered(true)}
+                          onMouseLeave={() => setIsHovered(false)}
+                        >
+                        <Plot
+                          data={plot.data}
+                          layout={plot.layout}
+                          style={{ width: "100%", height: "100%" }}
+                          
+                        />
+                     {/* {isHovered && (
+                        <button 
+                          onClick={handleAddToDashboard} 
+                          className="absolute bottom-4 right-4 bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition-all"
+                        >
+                          Add to dashboard
+                        </button>
+                      )} */}
+
+                      </div>
                     ) : (
                       <p>Failed to load graph</p>
                     )}

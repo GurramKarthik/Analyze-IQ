@@ -28,11 +28,14 @@ const ChatInput = ( {setLoading} ) => {
 
 
 
-  const handleSend = async (e) => {
+  const handleSend = async (e)=> {
     e.preventDefault();
-
+    if(fileURL === null){
+      ToastMessage("No File", "Please choose a File")
+      return
+    }
     try {
-      
+
       setLoading(true)
 
       if (!newMessage.current.value.trim()) return;
@@ -120,7 +123,7 @@ const ChatInput = ( {setLoading} ) => {
         ref={newMessage}
         placeholder="Type your message here."
         id="message" // style is defined in app.css
-        className="resize-none border-none focus:border-transparent focus:ring-0 focus:outline-none item-center"
+        className="resize-none border-none focus:border-transparent focus:ring-0 focus:outline-none item-center text-white"
       />
       <button className="mr-3 sendBtn">
         <svg

@@ -10,10 +10,10 @@ def setDataframe(user, request, instances, analysis_results):
     data = request.json
     file_url = data.get("file_url")
     
-    if instances["file_url"] is None or instances['file_url'] != file_url : 
-        instances['file_url'] = file_url
-    elif instances['file_url'] == file_url:
-        return jsonify({"success":True, "message": "File set Successfully"}), 200
+    # if instances["file_url"] is None or instances['file_url'] != file_url : 
+    #     instances['file_url'] = file_url
+    # elif instances['file_url'] == file_url:
+    #     return jsonify({"success":True, "message": "File set Successfully"}), 200
 
     if file_url != "large":
         response = requests.get(file_url)

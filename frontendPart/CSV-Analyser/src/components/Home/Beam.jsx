@@ -1,5 +1,3 @@
-"use client";
-
 import React, { forwardRef, useRef } from "react";
 import csv from "../../assets/csv.svg"
 import { cn } from "@/lib/utils";

@@ -29,7 +29,7 @@ export default function AppSidebar() {
   const {user} = useSelector(store => store.user)
   const files = user?.files
   return (
-    <Sidebar>
+    <Sidebar className='m-0'>
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>

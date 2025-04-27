@@ -1,66 +1,52 @@
-import React from 'react'
-import HeroSection from './HeroSection'
-import Overview from './Overview'
-import { InteractiveHoverButton } from '../magicui/interactive-hover-button'
-import ThemeProvider from '../theme-provider'
-import { ModeToggle } from './Dark'
-import Card from './Card'
-import Beam from './Beam'
-import Example from './Example'
-import Footer from './Footer'
-import  flowImage from "../../assets/forwebsite.svg"
-import SpinningEcosystem from './spin'
-
-
-
-
-const what = [
-  "Upload CSV & explore trends instantly",
-  "Ask questions, get AI-driven insights",
-  "Generate interactive graphs"
-]
-
-const feature = [
-    "No coding needed",
-    "Visualize data effortlessly",
-    "Ensures data privacy & speed"
-]
-
-
-const why = [
-  "No data science expertise required",
-  "Faster decision-making",
-  "Ideal for analysts & professionals"
-]
+import React, { useRef, useState } from 'react';
+import HeroSection from './HeroSection';
+import Card from './Card';
+import HorizontalScrolling from './HorizontalScrolling';
+import styles from "./Home.module.scss";
+import Footer from './Footer';
+import HoverDiv from './HoverDiv';
+import GetStartButton from './GetStartBtn';
 
 const Home = () => {
-  return (
-    <div className=''>
-        <HeroSection/>
-        {/* flex h-[500px] flex-col gap-4 lg:h-[250px] lg:flex-row justify-between p-3 mt-10  */}
-        {/* <div className="flex wrap gap-2 justify-between pl-3 pr-3" id='cardview'  >
-            <Card title={"What Can CSV-Analyser Do?"} details={what} />
-            <Card title={"Key Features"} details={feature}/>
-            <Card title={"Why Choose CSV-Analyser?"} details={why}/>
-        </div> */}
+  const [hoverState, setHoverState] = useState({
+    isHovering: false,
+    activeImage: null,
+    position: { x: 0, y: 0 }
+  });
 
-        <div className='flex flex-row gap-3'>
-          <div>
-            <img src={flowImage} style={{transform:"scale(1)"}}></img>
-          </div>
-          <div></div>
-          <div></div>
-        </div>
+  const containerRef = useRef(null);
 
+  const handleMouseMove = (e) => {
+    if (hoverState.isHovering) {
+      setHoverState(prev => ({
+        ...prev,
+        position: { x: e.clientX, y: e.clientY }
+      }));
+    }
+  };
 
-        <SpinningEcosystem/>
   
-        <Beam/>
-        <Example/>
-        <hr className='mr-4 mt-2' />
-        <Footer/>
-    </div>
-  )
-}
+  return (
+    <div 
+      className='ml-[-4vmin] bg-[#f1f1f1]'
+      onMouseMove={handleMouseMove}
+      ref={containerRef}
+    >
+      <HeroSection />
+      <div className={`pt-[1vmin] ${styles.second} flex flex-col`}>
+        <Card />
+      </div>
+      <HorizontalScrolling />
 
-export default Home
+      <HoverDiv hoverState={hoverState} setHoverState={setHoverState}/>
+    
+      <div className='relative w-full h-10 flex flex-row justify-center items-center translate-y-[-40px]'>
+        <GetStartButton/>
+      </div>
+      <Footer/>
+
+    </div>
+  );
+};
+
+export default Home;

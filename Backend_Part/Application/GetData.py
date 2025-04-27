@@ -14,7 +14,7 @@ def getData(user, request, getFileData):
                     return jsonify({"success":False, "message": "File is not present"}), 401
                getFileData["tempDf"] =  pd.read_csv(StringIO(response.text))
           
-        
+
         startRow = data.get("startRow")
         endRow = startRow + 100
         columns  = getFileData["tempDf"].columns.tolist()
@@ -27,7 +27,7 @@ def getData(user, request, getFileData):
 
         return jsonify({"success":True, "message": "retrived data", "columns": columns, "rows":rows, "next": next}), 200
     except Exception as e:
-         print(str(e))
+         print("asdd ",str(e))
          return jsonify({"success":False, "message": str(e)}), 500
 
 

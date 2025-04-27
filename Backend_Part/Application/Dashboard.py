@@ -6,11 +6,18 @@ from .PlotData import plotGraphs
 def Dashborad(user, request, instances, analysis_results):
     try:
         print("entered Dashboard")
-        # setting dataframe and cleaning the data
-        if instances.get('df') is None or instances['df'].empty:
-            print("setDta")
-            setDataframe(user, request, instances, analysis_results)
 
+        data = request.json
+        currFileUrl = data.get("file_url")
+
+        # setting dataframe and cleaning the data
+        if instances.get('df') is None or instances['df'].empty or instances.get("file_url") is None or currFileUrl != instances.get("file_url"):
+            print("setData")
+            instances["file_url"] = currFileUrl
+            setDataframe(user, request, instances, analysis_results)
+        
+    
+        
         plotGraphs(instances, analysis_results)
     
         # Now jsonify will work

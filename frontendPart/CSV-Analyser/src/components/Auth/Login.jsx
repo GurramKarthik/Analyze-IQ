@@ -11,6 +11,7 @@ import { Loader } from 'lucide-react'
 import axios from 'axios'
 import { BACKEND_END_POINT } from '@/utils/Constants'
 import { ToastMessage } from '../Home/ToastMessage'
+import { dark } from '@mui/material/styles/createPalette'
 
 
 const Login = ({setFlag}) => {
@@ -32,7 +33,8 @@ const Login = ({setFlag}) => {
       try {
 
         setLoading(true)
-  
+        
+        console.log("hai");
         const userDetails = { 
           email : emailRef.current.value,
           password : passwordRef.current.value
@@ -48,16 +50,17 @@ const Login = ({setFlag}) => {
           },
             withCredentials: true,
           }).catch((error)=>{
-              setError(error.response.data.message || "An error occurred while Logging in! " );
+            console.log("error in rs", error)
+              ToastMessage( error.response.data.message);
           })  
           
-
-          console.log(response.data.success);
+          
+          console.log(" hao",response.data.success);
           
   
           if(response.data.success){
             // opening the home page
-            
+    
               console.log(" hhh "); 
               dispatch(setUser(response.data.user))
               navigate("/");
@@ -65,9 +68,10 @@ const Login = ({setFlag}) => {
               setError("");
               setLoading(false);
               ToastMessage("Logged In.", "You are free to use any service now!>>>>")
-
-
                   
+          }else{
+            console.log(response.data.message)
+            ToastMessage("Error", response.data)
           }
           
           setLoading(false);

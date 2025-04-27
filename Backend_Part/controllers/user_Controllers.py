@@ -39,6 +39,7 @@ def login_user(request):
     user = users.find_one({"email": data.get("email")})
     
     if not user:
+        print("user not found")
         return jsonify({"success":False, "message": "User not found"}), 404
     
     if not verify_password(data.get("password"), user["password"]):
@@ -115,10 +116,7 @@ def update_user(request, user):
 def FileUpload(request, user, instances):  
     try:
         print("file upload......")
-        print("file upload......")
-        print("file upload......")
-        print("file upload......")
-        print("file upload......")
+      
         # Check if file part exists
         if "file" not in request.files:
             return jsonify({"success": False, "error": "No file part in request"}), 400
@@ -126,18 +124,16 @@ def FileUpload(request, user, instances):
         file = request.files["file"]
         file_size_mb = float(request.form.get('size', 0))  
 
-        print("2")
         if not file or file.filename.strip() == "":
             return jsonify({"success": False, "message": "Please provide a file in CSV format."}), 400
 
-        print("3")
         if file_size_mb > 10:
             print("File is large (>10 MB)")
             instances['df'] = pd.read_csv(file)
+            print(instances['df'].head(10))
             print("df changed. at file")
             return jsonify({"success": True, "message": "large"}), 200
 
-        print("4")
         print("Uploading file to Cloudinary......")
         try:
             cloudinary_config = cloudinary.config()
@@ -153,7 +149,6 @@ def FileUpload(request, user, instances):
             print("Error in file upload:", str(e))
             return jsonify({"success": False, "message": "Error while uploading the CSV", "details": str(e)}), 500
 
-        print("7")
         if file_url:
             db = getDB()
             db["users"].update_one(

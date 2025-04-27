@@ -4,11 +4,15 @@ import { BACKEND_END_POINT } from '@/utils/Constants';
 import { ToastMessage } from '../Home/ToastMessage';
 import { setDataURL } from '@/Store/Dataframe';
 import { useDispatch, useSelector } from 'react-redux';
-import { setUser } from '@/Store/User';
+import { addFile, setUser } from '@/Store/User';
 import { store } from '@/Store';
+import useLoadData from '@/hooks/useLoadData';
+import { clearDashboardData } from '@/Store/Dashboard';
 
 
 const Uploadcsv = () => {
+
+    useLoadData()
 
     const inputFile = useRef(null);
     const dispatch = useDispatch();
@@ -16,7 +20,7 @@ const Uploadcsv = () => {
     const [fileName, setFileName] = useState("No file selected");
     const {user} =  useSelector(store => store.user)
 
-    
+    dispatch(clearDashboardData())
     
     
 
@@ -58,14 +62,11 @@ const Uploadcsv = () => {
               } 
               console.log("response ", response)
                 dispatch(setDataURL(response.data.file_url))
-                user.files.push({ "filename" : fileName ,"url" :response.data.file_url })
-                dispatch(setUser(user))
+                dispatch(addFile({ "filename" : fileName ,"url" :response.data.file_url }))
                 ToastMessage("", "Your file has been uploaded")
             }else{
                 ToastMessage("Error", response.data.message)
-            }
-            
-            
+            }    
         }catch (error) {
             ToastMessage("Error", error.message)
         }finally{

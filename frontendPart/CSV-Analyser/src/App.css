@@ -87,7 +87,8 @@
 
 
 .NavBar{
-  position: fixed !important;
+  /* position: fixed !important; */
+  position: absolute;
   top: 2vmin;
   right: 2vmin;
   display: flex;
@@ -269,3 +270,30 @@
   border-right: 8px solid transparent;
   border-top: 8px solid white;
 }
+
+
+.homeImage{
+    border: solid #4f3d58 2px;
+    margin-left: 2px;
+    border-radius: 10px;
+}
+
+
+.text-label {
+  display: none;
+  font-family: Roboto, sans-serif;
+  font-size: 14px;
+  fill: #000;
+}
+
+/* Show text when hovering over the corresponding group */
+g.item:hover .text-label {
+  display: block;
+}
+
+/* Optional: Highlight the hovered item */
+g.item:hover path {
+  stroke: #ff0000; /* Red border on hover */
+  stroke-width: 2;
+}
+

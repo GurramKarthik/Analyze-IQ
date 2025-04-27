@@ -11,7 +11,6 @@ CORS(app, supports_credentials=True, origins=["http://localhost:5173"])
 
 # Initialize MongoDB
 init_db(app)
-
 # Register routes
 setup_routes(app)
 

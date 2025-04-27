@@ -18,8 +18,6 @@ from plotly.utils import PlotlyJSONEncoder
 
 
 
-
-
 def filter_valid_plotly_params(graph_type, params, df=None):
     """
     Filters:
@@ -50,36 +48,16 @@ def filter_valid_plotly_params(graph_type, params, df=None):
     return filtered_params
 
 
-def save_data_locally(metaData, finalMeta, error_message):
-    """Save metaData and finalMeta locally in case of an error."""
-    error_dir = "error_logs"
-    os.makedirs(error_dir, exist_ok=True)
-
-    error_count = len([f for f in os.listdir(error_dir) if f.startswith("error_log")])
-
-    file_name = f"{error_dir}/error_log_{error_count + 1}.json"
-
-    data = {
-        "error_message": error_message,
-        "metaData": metaData,
-        "finalMeta": finalMeta
-    }
-
-    with open(file_name, "w") as f:
-        json.dump(data, f, indent=4)
-    
-    print(f"Error data saved locally in {file_name}")
-
-
 def plotGraphs(instances, analysis_results):
     try:
-
+        print("Entered graphs")
         prompt = ChatPromptTemplate.from_messages([
             ('system', "{dashbordPrompt}"),
             ('human', "{data}"),
         ])
 
-        
+
+
         first10rows = instances.get('df').head(10).to_string()
 
         groq_api_key = os.getenv("GROQ_API_KEY")
@@ -96,9 +74,7 @@ def plotGraphs(instances, analysis_results):
             )
 
         
-        # metaData:  [{'graphType': 'bar', 'title': 'Top 10 Countries by Sales'}, {'graphType': 'scatter', 'title': 'Relationship between Quantity Ordered and Sales'}, {'graphType': 'pie', 'title': 'Distribution of Sales by Product Line'}, {'graphType': 'line', 'title': 'Monthly Sales Trend'}, {'graphType': 'histogram', 'title': 'Distribution of Order Quantity'}, {'graphType': 'box', 'title': 'Sales Distribution by Deal Size'}, {'graphType': 'sunburst', 'title': 'Sales by Country and Product Line'}, {'graphType': 'treemap', 'title': 'Sales by Country, Product Line, and Deal Size'}]
-        # metaData =[{'graphType': 'bar', 'title': 'Expenses by Region'}, {'graphType': 'histogram', 'title': 'Distribution of Expenses'}, {'graphType': 'box', 'title': 'Expenses by Sex'}, {'graphType': 'scatter', 'title': 'Expenses vs Age'}, {'graphType': 'scatter', 'title': 'Expenses vs BMI'}, {'graphType': 'bar', 'title': 'Expenses by Smoker Status'}, {'graphType': 'violin', 'title': 'Expenses Distribution by Region'}, {'graphType': 'histogram', 'title': 'Distribution of Age'}, {'graphType': 'histogram', 'title': 'Distribution of BMI'}, {'graphType': 'pie', 'title': 'Smoker Status Distribution'}, {'graphType': 'bar', 'title': 'Average Expenses by Number of Children'}]
-
+     
         try:
             print('setting metaData ')
             chain = prompt | instances.get("llm")
@@ -106,9 +82,8 @@ def plotGraphs(instances, analysis_results):
             metaData = json.loads(answer.content)
             print('metaData set')
         except Exception as e:
-            save_data_locally([], [], f"LLM invocation error: {str(e)}")
             print("LLM invocation failed:", str(e))
-            return
+            return 
 
         print('metaData: ',metaData)
 
@@ -116,8 +91,6 @@ def plotGraphs(instances, analysis_results):
             print('seting engine')
             instances["engine"] = SmartDataframe(instances.get('df'), config={"llm": instances.get("llm"), "enable_cache": False})
 
-        # Final Meta: [{'x': 'COUNTRY', 'y': 'SALES', 'data': [{'COUNTRY': 'USA', 'SALES': 3627982.83}, {'COUNTRY': 'Spain', 'SALES': 1215686.92}, {'COUNTRY': 'France', 'SALES': 1110916.52}, {'COUNTRY': 'Australia', 'SALES': 630623.1}, {'COUNTRY': 'UK', 'SALES': 478880.46}, {'COUNTRY': 'Italy', 'SALES': 374674.31}, {'COUNTRY': 'Finland', 'SALES': 329581.91}, {'COUNTRY': 'Norway', 'SALES': 307463.7}, {'COUNTRY': 'Singapore', 'SALES': 288488.41}, {'COUNTRY': 'Denmark', 'SALES': 245637.15}]}, {'x': 'QUANTITYORDERED', 'y': 'SALES', 'title': 'Relationship between Quantity Ordered and Sales'}, {'values': [3919615.66, 1166388.34, 975003.57, 714437.13, 226243.47, 1127789.84, 1903150.84], 'names': ['Classic Cars', 'Motorcycles', 'Planes', 'Ships', 'Trains', 'Trucks and Buses', 'Vintage Cars'], 'title': 'Distribution of Sales by Product Line'}, {'x': 'MONTH', 'y': 'SALES', 'title': 'Monthly Sales Trend'}, {'x': 'QUANTITYORDERED', 'title': 'Distribution of Order Quantity', 'color_discrete_sequence': ['blue'], 'template': 'plotly_white'}, {'x': 'DEALSIZE', 'y': 'SALES', 'title': 'Sales Distribution by Deal Size'}, {'path': ['COUNTRY', 'PRODUCTLINE'], 'values': 'SALES'}, {'names': 'PRODUCTLINE', 'parents': 'COUNTRY', 'values': 'SALES', 'color': 'DEALSIZE'}]
-        # finalMeta = [{'x': 'region', 'y': 'expenses', 'title': 'Expenses by Region', 'color_discrete_sequence': ['blue']}, {'x': 'expenses', 'title': 'Distribution of Expenses', 'color_discrete_sequence': ['blue'], 'template': 'plotly_white'}, {'x': 'sex', 'y': 'expenses'}, {'x': 'age', 'y': 'expenses', 'title': 'Expenses vs Age'}, {'x': 'bmi', 'y': 'expenses', 'title': 'Expenses vs BMI'}, {'x': 'smoker', 'y': 'expenses', 'title': 'Expenses by Smoker Status'}, {'x': 'region', 'y': 'expenses'}, {'x': 'age', 'title': 'Distribution of Age', 'color_discrete_sequence': ['blue'], 'template': 'plotly_white'}, {'x': 'bmi', 'title': 'Distribution of BMI', 'color_discrete_sequence': ['blue'], 'template': 'plotly_white'}, {'values': [1064, 274], 'names': ['no', 'yes'], 'title': 'Smoker Status Distribution'}, {'x': 'children', 'y': 'expenses', 'title': 'Average Expenses by Number of Children', 'color_discrete_sequence': ['blue'], 'template': 'plotly_white'}]
         
         finalMeta = []
         # correct code
@@ -160,11 +133,11 @@ def plotGraphs(instances, analysis_results):
                             finalMeta.append(data_dict)
                 except Exception as inner_e:
                     print(f"Failed to extract JSON: {str(inner_e)}")
-                    save_data_locally(metaData, finalMeta, f"Failed to extract JSON: {str(inner_e)}")
+                    return
             except Exception as e:
                 print(f"General error for {graph['title']}: {str(e)}")
                 print(f"Raw response: {response}")
-                save_data_locally(metaData, finalMeta, f"SmartDataframe chat error: {str(e)}")
+                return
 
         print("Final Meta:", finalMeta)
         plots = []
@@ -173,27 +146,331 @@ def plotGraphs(instances, analysis_results):
             try:
                 print("Chating....")
                 result = instances["engine"].chat(f"return the dataframe for {metaData[i]['title']}")
-                
+                print("result: ", i)
+                grpahType = 'imshow' if metaData[i]['graphType'].lower() == 'heatmap' else metaData[i]['graphType'].lower()
                 if isinstance(result, SmartDataframe):
                     result = pd.DataFrame(result, columns=result.columns)
                     params = {**finalMeta[i], 'x': result.columns[0]}
                     filtered_params = filter_valid_plotly_params(metaData[i]['graphType'], params, result)
-                    fig = getattr(px, metaData[i]['graphType'].lower())(result, **filtered_params)
+                    fig = getattr(px, grpahType)(result, **filtered_params)
                 else:
                     filtered_params = filter_valid_plotly_params(metaData[i]['graphType'], finalMeta[i], instances.get('df'))
-                    fig = getattr(px, metaData[i]['graphType'].lower())(instances.get('df'), **filtered_params)
+                    fig = getattr(px, grpahType)(instances.get('df'), **filtered_params)
                 
                 graph_json = plotly.utils.PlotlyJSONEncoder().encode(fig)
                 plots.append(graph_json)
+
             except Exception as e:
-                save_data_locally(metaData, finalMeta, f"Plotting error: {str(e)}")
                 print("Plotting error:", str(e))
+                # return
         
         analysis_results['results']['plots'] = plots
     except Exception as e:
+        print(analysis_results['results']['plots'])
         print("Error in plots: ", str(e))
+        return 
 
 
 
 # Final Meta: [{'x': 'region', 'y': 'expenses', 'title': 'Expenses by Region', 'color_discrete_sequence': ['blue']}, {'x': 'expenses', 'title': 'Distribution of Expenses', 'color_discrete_sequence': ['blue'], 'template': 'plotly_white'}, {'x': 'sex', 'y': 'expenses'}, {'x': 'age', 'y': 'expenses', 'title': 'Expenses vs Age'}, {'x': 'bmi', 'y': 'expenses', 'title': 'Expenses vs BMI'}, {'x': 'smoker', 'y': 'expenses', 'title': 'Expenses by Smoker Status'}, {'x': 'region', 'y': 'expenses'}, {'x': 'age', 'title': 'Distribution of Age', 'color_discrete_sequence': ['blue'], 'template': 'plotly_white'}, {'x': 'bmi', 'title': 'Distribution of BMI', 'color_discrete_sequence': ['blue'], 'template': 'plotly_white'}, {'values': [1064, 274], 'names': ['no', 'yes'], 'title': 'Smoker Status Distribution'}, {'x': 'children', 'y': 'expenses', 'title': 'Average Expenses by Number of Children', 'color_discrete_sequence': ['blue'], 'template': 'plotly_white'}]
 # metaData:  [{'graphType': 'bar', 'title': 'Expenses by Region'}, {'graphType': 'histogram', 'title': 'Distribution of Expenses'}, {'graphType': 'box', 'title': 'Expenses by Sex'}, {'graphType': 'scatter', 'title': 'Expenses vs Age'}, {'graphType': 'scatter', 'title': 'Expenses vs BMI'}, {'graphType': 'bar', 'title': 'Expenses by Smoker Status'}, {'graphType': 'violin', 'title': 'Expenses Distribution by Region'}, {'graphType': 'histogram', 'title': 'Distribution of Age'}, {'graphType': 'histogram', 'title': 'Distribution of BMI'}, {'graphType': 'pie', 'title': 'Smoker Status Distribution'}, {'graphType': 'bar', 'title': 'Average Expenses by Number of Children'}]
+# Final Meta: [{'x': 'COUNTRY', 'y': 'SALES', 'data': [{'COUNTRY': 'USA', 'SALES': 3627982.83}, {'COUNTRY': 'Spain', 'SALES': 1215686.92}, {'COUNTRY': 'France', 'SALES': 1110916.52}, {'COUNTRY': 'Australia', 'SALES': 630623.1}, {'COUNTRY': 'UK', 'SALES': 478880.46}, {'COUNTRY': 'Italy', 'SALES': 374674.31}, {'COUNTRY': 'Finland', 'SALES': 329581.91}, {'COUNTRY': 'Norway', 'SALES': 307463.7}, {'COUNTRY': 'Singapore', 'SALES': 288488.41}, {'COUNTRY': 'Denmark', 'SALES': 245637.15}]}, {'x': 'QUANTITYORDERED', 'y': 'SALES', 'title': 'Relationship between Quantity Ordered and Sales'}, {'values': [3919615.66, 1166388.34, 975003.57, 714437.13, 226243.47, 1127789.84, 1903150.84], 'names': ['Classic Cars', 'Motorcycles', 'Planes', 'Ships', 'Trains', 'Trucks and Buses', 'Vintage Cars'], 'title': 'Distribution of Sales by Product Line'}, {'x': 'MONTH', 'y': 'SALES', 'title': 'Monthly Sales Trend'}, {'x': 'QUANTITYORDERED', 'title': 'Distribution of Order Quantity', 'color_discrete_sequence': ['blue'], 'template': 'plotly_white'}, {'x': 'DEALSIZE', 'y': 'SALES', 'title': 'Sales Distribution by Deal Size'}, {'path': ['COUNTRY', 'PRODUCTLINE'], 'values': 'SALES'}, {'names': 'PRODUCTLINE', 'parents': 'COUNTRY', 'values': 'SALES', 'color': 'DEALSIZE'}]
+# finalMeta = [{'x': 'region', 'y': 'expenses', 'title': 'Expenses by Region', 'color_discrete_sequence': ['blue']}, {'x': 'expenses', 'title': 'Distribution of Expenses', 'color_discrete_sequence': ['blue'], 'template': 'plotly_white'}, {'x': 'sex', 'y': 'expenses'}, {'x': 'age', 'y': 'expenses', 'title': 'Expenses vs Age'}, {'x': 'bmi', 'y': 'expenses', 'title': 'Expenses vs BMI'}, {'x': 'smoker', 'y': 'expenses', 'title': 'Expenses by Smoker Status'}, {'x': 'region', 'y': 'expenses'}, {'x': 'age', 'title': 'Distribution of Age', 'color_discrete_sequence': ['blue'], 'template': 'plotly_white'}, {'x': 'bmi', 'title': 'Distribution of BMI', 'color_discrete_sequence': ['blue'], 'template': 'plotly_white'}, {'values': [1064, 274], 'names': ['no', 'yes'], 'title': 'Smoker Status Distribution'}, {'x': 'children', 'y': 'expenses', 'title': 'Average Expenses by Number of Children', 'color_discrete_sequence': ['blue'], 'template': 'plotly_white'}]
+       # metaData:  [{'graphType': 'bar', 'title': 'Top 10 Countries by Sales'}, {'graphType': 'scatter', 'title': 'Relationship between Quantity Ordered and Sales'}, {'graphType': 'pie', 'title': 'Distribution of Sales by Product Line'}, {'graphType': 'line', 'title': 'Monthly Sales Trend'}, {'graphType': 'histogram', 'title': 'Distribution of Order Quantity'}, {'graphType': 'box', 'title': 'Sales Distribution by Deal Size'}, {'graphType': 'sunburst', 'title': 'Sales by Country and Product Line'}, {'graphType': 'treemap', 'title': 'Sales by Country, Product Line, and Deal Size'}]
+        # metaData =[{'graphType': 'bar', 'title': 'Expenses by Region'}, {'graphType': 'histogram', 'title': 'Distribution of Expenses'}, {'graphType': 'box', 'title': 'Expenses by Sex'}, {'graphType': 'scatter', 'title': 'Expenses vs Age'}, {'graphType': 'scatter', 'title': 'Expenses vs BMI'}, {'graphType': 'bar', 'title': 'Expenses by Smoker Status'}, {'graphType': 'violin', 'title': 'Expenses Distribution by Region'}, {'graphType': 'histogram', 'title': 'Distribution of Age'}, {'graphType': 'histogram', 'title': 'Distribution of BMI'}, {'graphType': 'pie', 'title': 'Smoker Status Distribution'}, {'graphType': 'bar', 'title': 'Average Expenses by Number of Children'}]
+   
+# import json
+# import re
+# import pandas as pd
+# import plotly.express as px
+# from typing import Dict, Any
+
+
+# def filter_valid_plotly_params(graph_type: str, params: Dict[str, Any], df=None) -> Dict[str, Any]:
+#     """
+#     Filters:
+#     - Valid Plotly parameters based on the graph type
+#     - Removes invalid or conflicting attributes like 'data_frame'
+#     - Checks for valid column names (if df is provided)
+#     """
+#     # Get valid parameters for the specific Plotly graph
+#     valid_params = inspect.signature(getattr(px, graph_type)).parameters
+
+#     # Filter valid parameters dynamically
+#     filtered_params = {k: v for k, v in params.items() if k in valid_params}
+
+#     # Remove 'data_frame' if present
+#     filtered_params.pop('data_frame', None)
+
+#     # Check for valid columns if df is provided
+#     if df is not None:
+#         valid_cols = df.columns.tolist()
+        
+#         # Remove invalid column references
+#         for key in ['x', 'y', 'z', 'color', 'size', 'names', 'values']:
+#             if key in filtered_params and isinstance(filtered_params[key], str):
+#                 if filtered_params[key] not in valid_cols:
+#                     print(f"⚠️ Invalid column '{filtered_params[key]}' removed.")
+#                     del filtered_params[key]
+
+#     return filtered_params
+
+
+# def extract_json_from_response(response: Any) -> Dict[str, Any]:
+#     """
+#     Attempts to extract a valid JSON object from a raw response.
+#     Handles cases where JSON is embedded in text or partially malformed.
+#     """
+#     try:
+#         # If the response is already a dictionary, return it directly
+#         if isinstance(response, dict):
+#             return response
+        
+#         # Convert the response to a string if it isn't already
+#         response_str = str(response).strip()
+
+#         # Attempt to parse the entire string as JSON
+#         try:
+#             return json.loads(response_str)
+#         except json.JSONDecodeError:
+#             pass
+
+#         # Extract JSON-like structure using regex
+#         match = re.search(r'\{.*\}', response_str, re.DOTALL)
+#         if match:
+#             json_str = match.group(0)
+#             return json.loads(json_str)
+
+#         # If no JSON-like structure is found, raise an error
+#         raise ValueError("No valid JSON found in the response.")
+#     except Exception as e:
+#         print(f"Failed to extract JSON: {str(e)}")
+#         return {}
+
+
+# def plotGraphs(instances, analysis_results):
+#     try:
+#         print("Entered graphs")
+#         prompt = ChatPromptTemplate.from_messages([
+#             ('system', "{dashbordPrompt}"),
+#             ('human', "{data}"),
+#         ])
+
+#         first10rows = instances.get('df').head(10).to_string()
+
+#         groq_api_key = os.getenv("GROQ_API_KEY")
+#         if not groq_api_key:
+#             raise ValueError("Missing GROQ_API_KEY. Ensure it is set in the environment.")
+            
+#         if instances.get("llm") is None:
+#             instances["llm"] = ChatGroq(
+#                 temperature=0,
+#                 groq_api_key=os.getenv("GROQ_API_KEY"),
+#                 model_name="llama-3.3-70b-versatile"
+#             )
+
+#         try:
+#             print('Setting metaData')
+#             chain = prompt | instances.get("llm")
+#             answer = chain.invoke({"dashbordPrompt": dashbordPrompt, "data": first10rows})
+#             metaData = json.loads(answer.content)
+#             print('metaData set')
+#         except Exception as e:
+#             print("LLM invocation failed:", str(e))
+#             return 
+
+#         print('metaData:', metaData)
+
+#         if instances["engine"] is None:
+#             print('Setting engine')
+#             instances["engine"] = SmartDataframe(instances.get('df'), config={"llm": instances.get("llm"), "enable_cache": False})
+
+#         finalMeta = []
+#         for graph in metaData:
+#             try:
+#                 print('Setting finalMetadata')
+#                 response = instances["engine"].chat(f"return the parameters in a json object that need to be passed for px.{graph['graphType']} for {graph['title']}")
+                
+#                 # Extract JSON from the response
+#                 data_dict = extract_json_from_response(response)
+#                 if not data_dict:
+#                     print(f"No valid JSON extracted for {graph['title']}. Skipping...")
+#                     continue
+                
+#                 print(data_dict)
+#                 finalMeta.append(data_dict)
+#             except Exception as e:
+#                 print(f"Error processing {graph['title']}: {str(e)}")
+#                 print(f"Raw response: {response}")
+#                 continue  # Skip this graph and proceed to the next one
+
+#         print("Final Meta:", finalMeta)
+#         plots = []
+
+#         for i, meta in enumerate(finalMeta):
+#             try:
+#                 print("Chatting....")
+#                 result = instances["engine"].chat(f"return the dataframe for {metaData[i]['title']}")
+#                 print("Result:", i)
+#                 graph_type = 'imshow' if metaData[i]['graphType'].lower() == 'heatmap' else metaData[i]['graphType'].lower()
+
+#                 if isinstance(result, SmartDataframe):
+#                     result = pd.DataFrame(result, columns=result.columns)
+#                     params = {**finalMeta[i], 'x': result.columns[0]}
+#                     filtered_params = filter_valid_plotly_params(metaData[i]['graphType'], params, result)
+#                     fig = getattr(px, graph_type)(result, **filtered_params)
+#                 else:
+#                     filtered_params = filter_valid_plotly_params(metaData[i]['graphType'], finalMeta[i], instances.get('df'))
+#                     fig = getattr(px, graph_type)(instances.get('df'), **filtered_params)
+                
+#                 graph_json = plotly.utils.PlotlyJSONEncoder().encode(fig)
+#                 plots.append(graph_json)
+
+#             except Exception as e:
+#                 print(f"Plotting error for graph {i}: {str(e)}")
+#                 continue  # Skip this graph and proceed to the next one
+
+#         analysis_results['results']['plots'] = plots
+#     except Exception as e:
+#         print(analysis_results['results']['plots'])
+#         print("Error in plots:", str(e))
+#         return
+
+# =============================================
+# 
+# 
+# import os
+# import json
+# import pandas as pd
+# import plotly.express as px
+# import plotly
+# import inspect
+# import psutil
+# import ast
+# from dotenv import load_dotenv
+# from plotly.utils import PlotlyJSONEncoder
+# from langchain_groq import ChatGroq
+# from langchain_core.prompts import ChatPromptTemplate
+# from pandasai import SmartDataframe
+# from .Prompts_text import dashbordPrompt
+
+# import matplotlib
+# matplotlib.use("Agg")  # Safe backend
+# os.environ["DISPLAY"] = ":0"  # Prevent GUI use
+
+# # Kill GUI attempts
+# def kill_gui_processes():
+#     gui_keywords = ['Xquartz', 'X11', 'Tk', 'Wish', 'pythonw']
+#     for proc in psutil.process_iter(['pid', 'name']):
+#         try:
+#             if any(keyword.lower() in proc.info['name'].lower() for keyword in gui_keywords):
+#                 print(f"Killing GUI process: {proc.info['name']} (PID: {proc.pid})")
+#                 proc.kill()
+#         except Exception as e:
+#             print(f"Error killing process {proc.info['name']}: {e}")
+
+# # Parse JSON or Python-style dictionary
+# def parse_to_dict(response_str):
+#     try:
+#         return json.loads(response_str)
+#     except json.JSONDecodeError:
+#         try:
+#             return ast.literal_eval(response_str)
+#         except Exception as e:
+#             print("❌ Failed to parse response as dict:", e)
+#             raise e
+
+# # Filter valid Plotly params
+# def filter_valid_plotly_params(graph_type, params, df=None):
+#     valid_params = inspect.signature(getattr(px, graph_type)).parameters
+#     filtered_params = {k: v for k, v in params.items() if k in valid_params}
+#     filtered_params.pop('data_frame', None)
+#     if df is not None:
+#         valid_cols = df.columns.tolist()
+#         for key in ['x', 'y', 'z', 'color', 'size', 'names', 'values']:
+#             if key in filtered_params and isinstance(filtered_params[key], str):
+#                 if filtered_params[key] not in valid_cols:
+#                     print(f"⚠️ Invalid column '{filtered_params[key]}' removed.")
+#                     del filtered_params[key]
+#     return filtered_params
+
+# # Main logic
+# def plotGraphs(instances, analysis_results):
+#     try:
+#         print("Entered graphs")
+#         prompt = ChatPromptTemplate.from_messages([
+#             ('system', "{dashbordPrompt}"),
+#             ('human', "{data}"),
+#         ])
+
+#         first10rows = instances.get('df').head(10).to_string()
+#         load_dotenv()
+#         groq_api_key = os.getenv("GROQ_API_KEY")
+#         if not groq_api_key:
+#             raise ValueError("Missing GROQ_API_KEY. Ensure it is set in the environment.")
+
+#         if instances.get("llm") is None:
+#             instances["llm"] = ChatGroq(
+#                 temperature=0,
+#                 groq_api_key=groq_api_key,
+#                 model_name="llama-3.3-70b-versatile"
+#             )
+
+#         try:
+#             chain = prompt | instances.get("llm")
+#             answer = chain.invoke({"dashbordPrompt": dashbordPrompt, "data": first10rows})
+#             metaData = json.loads(answer.content)
+#         except Exception as e:
+#             print("LLM invocation failed:", str(e))
+#             return
+
+#         print('metaData:', metaData)
+
+#         if instances["engine"] is None:
+#             instances["engine"] = SmartDataframe(instances.get('df'), config={"llm": instances.get("llm"), "enable_cache": False})
+
+#         finalMeta = []
+#         for graph in metaData:
+#             try:
+#                 response = instances["engine"].chat(
+#                     f"return the parameters in a json object that need to be passed for px.{graph['graphType']} for {graph['title']}"
+#                 )
+#                 response_str = str(response).strip()
+
+#                 # Attempt safe parsing
+#                 data_dict = parse_to_dict(response_str)
+#                 print("✅ Parsed parameters:", data_dict)
+#                 finalMeta.append(data_dict)
+
+#             except Exception as e:
+#                 print(f"❌ Error parsing parameters for {graph['title']}: {e}")
+#                 continue
+
+#         plots = []
+#         for i in range(len(finalMeta)):
+#             try:
+#                 result = instances["engine"].chat(f"return the dataframe for {metaData[i]['title']}")
+#                 graphType = 'imshow' if metaData[i]['graphType'].lower() == 'heatmap' else metaData[i]['graphType'].lower()
+
+#                 if isinstance(result, SmartDataframe):
+#                     result = pd.DataFrame(result, columns=result.columns)
+#                     params = {**finalMeta[i], 'x': result.columns[0]}
+#                     filtered_params = filter_valid_plotly_params(metaData[i]['graphType'], params, result)
+#                     fig = getattr(px, graphType)(result, **filtered_params)
+#                 else:
+#                     filtered_params = filter_valid_plotly_params(metaData[i]['graphType'], finalMeta[i], instances.get('df'))
+#                     fig = getattr(px, graphType)(instances.get('df'), **filtered_params)
+
+#                 kill_gui_processes()  # Kill any rogue GUI apps
+#                 graph_json = PlotlyJSONEncoder().encode(fig)
+#                 plots.append(graph_json)
+
+#             except Exception as e:
+#                 print("Plotting error:", str(e))
+#                 continue
+
+#         analysis_results['results']['plots'] = plots
+
+#     except Exception as e:
+#         print("Fatal error in plotGraphs():", str(e))
+#         return

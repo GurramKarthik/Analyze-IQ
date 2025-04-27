@@ -20,28 +20,25 @@ const App = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch()
 
-  useEffect(() =>{
-    if(!fileURL && user?.files?.length>0 ){
-      dispatch(setDataURL(user?.files[user?.files?.length-2].url))
-    }
-  }, [])
+ 
   
   
   useLoadData();
   
   return (
 
-    <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme" className='min-w-screen min-h-screen'>
+    <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme" className='min-w-screen min-h-screen '>
          <div className="NavBar">
            <ModeToggle />
            {user ? <LoginTrigger/> : <PulsatingButton onClick={()=> navigate("/auth")}>Login</PulsatingButton> }
          </div>
 
-        <SidebarProvider>
-          <AppSidebar/>
-        
+
+        <SidebarProvider defaultOpen={false}  >
+          <AppSidebar />
+          <SidebarTrigger className='z-[100]'  />        
           <main className="w-full">
-            <SidebarTrigger />
+
             <Outlet/>
             <ToastContainer/>
           </main>

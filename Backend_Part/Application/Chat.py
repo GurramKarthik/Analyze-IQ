@@ -17,7 +17,7 @@ from io import StringIO
 import sys
 
 
-def plotGrpah( query, instances):
+def plotGrpah( query, instances, chatEngine, chatLLm):
     try:
 
         dfInfo = f"Shape: {instances['df'].shape}\n{instances['df'].dtypes.to_string()}"
@@ -30,9 +30,9 @@ def plotGrpah( query, instances):
                 - suggest a single graph type that helps in visuvalising the graph.
                 - A title for this graph.
             output:
-                - return a json object having graphType and title for this graph. 
+                - return an array having an object having graphType and title for this graph. 
                 - graphType should be suitable for plotly.
-            No preamble required. just return a json object with no code.
+            No preamble required. just return the array as required.
             """
         
 
@@ -41,7 +41,7 @@ def plotGrpah( query, instances):
                 ('human', "{plot}"),
         ])
 
-        chain = prompt | instances.get("llm")
+        chain = prompt | chatLLm
         print("llm query")
         answer = chain.invoke({"graphPrompt": graphPrompt, "dfInfo": dfInfo , "plot": query})
         print("meta Data for graph: ", answer)
@@ -49,7 +49,7 @@ def plotGrpah( query, instances):
         print("meta Data for graph: ", answer)
 
         print("final meta query")
-        response = instances["engine"].chat(f"return the parameters in a json object that need to be passed for px.{metaData['graphType']} for {metaData['title']}")
+        response = chatEngine.chat(f"return the parameters in a json object that need to be passed for px.{metaData[0]['graphType']} for {metaData[0]['title']}")
         if isinstance(response, dict):
             data_dict = response
         else:
@@ -61,15 +61,15 @@ def plotGrpah( query, instances):
                 data_dict = json.loads(response_str)
 
         print("dataframe query")
-        result = instances["engine"].chat(f"return the dataframe for {metaData['title']}")
+        result = chatEngine.chat(f"return the dataframe for {metaData[0]['title']}")
         if isinstance(result, SmartDataframe):
             result = pd.DataFrame(result, columns=result.columns)
             params = {**data_dict, 'x': result.columns[0]}
-            filtered_params = filter_valid_plotly_params(metaData['graphType'], params, result)
-            fig = getattr(px, metaData['graphType'])(result, **filtered_params)
+            filtered_params = filter_valid_plotly_params(metaData[0]['graphType'], params, result)
+            fig = getattr(px, metaData[0]['graphType'])(result, **filtered_params)
         else:
-            filtered_params = filter_valid_plotly_params(metaData['graphType'], data_dict , instances.get('df'))
-            fig = getattr(px, metaData['graphType'])(instances.get('df'), **filtered_params)
+            filtered_params = filter_valid_plotly_params(metaData[0]['graphType'], data_dict , instances.get('df'))
+            fig = getattr(px, metaData[0]['graphType'])(instances.get('df'), **filtered_params)
             fig.show()
         graph_json = plotly.utils.PlotlyJSONEncoder().encode(fig)
         return jsonify({"success":True, "query": query, "answerFormat": "Plot" , "answer": graph_json}), 200
@@ -84,22 +84,24 @@ def plotGrpah( query, instances):
 def chatWithLLM(user, request, instances, analysis_results):
     try:
         data = request.json
+        fileUrl = data.get("file_url")
+        if fileUrl is None:
+            return  jsonify({"success":False, "message": "Please Choose a file"}), 400
+        
         if instances['df'] is None:
             setDataframe(user, request, instances, analysis_results)
+            
+        chatLLm = ChatGroq(temperature=0, groq_api_key=os.getenv("GROQ_API_KEY"), model_name="llama-3.3-70b-versatile")    
 
-        if instances["llm"] is None:
-            instances["llm"] = ChatGroq(temperature=0, groq_api_key=os.getenv("GROQ_API_KEY"), model_name="llama-3.3-70b-versatile")    
-
-        if  instances["engine"] is None:
-            instances["engine"] = SmartDataframe(instances['df'], config={"llm": instances["llm"] , "enable_cache": False})
+        chatEngine =  SmartDataframe(instances['df'], config={"llm": chatLLm, "enable_cache": False})
 
         query = data.get("query")
         chatType = data.get("chatType")
 
         if chatType == 'Plot':
-             return plotGrpah(query, instances)   
+             return plotGrpah(query, instances ,chatEngine, chatLLm)   
         else:            
-            answer = instances["engine"].chat(query)
+            answer = chatEngine.chat(query)
             if isinstance(answer, SmartDataframe):
                 answer_json = answer.to_dict(orient="records")  
                 answerFormat = "table"
@@ -115,6 +117,6 @@ def chatWithLLM(user, request, instances, analysis_results):
         
     except Exception as e:
         print(str(e))
-        return jsonify({"success":False, "message": str(e)}), 500
+        return  jsonify({"success":False, "message": str(e)}), 500
 
     
