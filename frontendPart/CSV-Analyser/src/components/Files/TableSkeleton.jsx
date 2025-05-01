@@ -2,11 +2,11 @@ import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from "@/components/ui/tooltip";
 
 const TableSkeleton = () => {
-  const numCols = 10;  // Adjust the number of columns for the skeleton
-  const numRows = 6;   // Adjust the number of rows for the skeleton
+  const numCols =6 ;  
+  const numRows = 6;   
 
   return (
-    <Table>
+    <Table className='mt-[17vmin]'>
       <TableHeader className="rounded-[4px] bg-gray-200 animate-pulse">
         <TableRow>
           {Array.from({ length: numCols }).map((_, index) => (

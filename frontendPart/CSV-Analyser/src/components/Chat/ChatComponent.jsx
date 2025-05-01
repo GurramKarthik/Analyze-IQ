@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Bot, User } from 'lucide-react';
 import Plot from "react-plotly.js";
 
@@ -49,6 +49,27 @@ const ChatComponent = ({Chats}) => {
 }
 
 
+const renderValue = (value) => {
+  if (typeof value === "object" && value !== null) {
+    if (Array.isArray(value)) {
+      return <ul className="list-disc pl-5">{value.map((item, i) => <li key={i}>{renderValue(item)}</li>)}</ul>;
+    } else {
+      return (
+        <ul className="list-none pl-3 text-sm">
+          {Object.entries(value).map(([key, val]) => (
+            <li key={key}>
+              <strong>{key}:</strong> {renderValue(val)}
+            </li>
+          ))}
+        </ul>
+      );
+    }
+  }
+  return String(value);
+};
+
+
+
 const renderMessageContent = (message) => {
 
   // const [isHovered, setIsHovered] = useState(false);
@@ -56,49 +77,68 @@ const renderMessageContent = (message) => {
   if (message.answerFormat === "table") {
     if (Array.isArray(message.text) && message.text.length > 0) {
       const headers = Object.keys(message.text[0]); // Extract column names
-
+  
       return (
-        <table border="1">
-          <thead>
-            <tr>
-              {headers.map((header, index) => (
-                <th key={index}>{header}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {message.text.map((row, rowIndex) => (
-              <tr key={rowIndex}>
-                {headers.map((header, colIndex) => (
-                  <td key={colIndex}>{row[header]}</td>
+        <div className="overflow-x-auto">
+          <table className="min-w-full border-collapse border border-gray-300 rounded-lg overflow-hidden bg-white shadow-sm">
+            <thead>
+              <tr className="bg-gray-300">
+                {headers.map((header, index) => (
+                  <th
+                    key={index}
+                    className="px-6 py-3 text-left text-sm font-semibold text-gray-700"
+                  >
+                    {header}
+                  </th>
                 ))}
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {message.text.map((row, rowIndex) => (
+                <tr
+                  key={rowIndex}
+                  className="hover:bg-gray-200 bg-[#f2f2f2] transition-colors duration-150"
+                >
+                  {headers.map((header, colIndex) => (
+                    <td
+                      key={colIndex}
+                      className="px-6 py-4 text-sm text-gray-700"
+                    >
+                      {renderValue(row[header])}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       );
     }
-  } else if (message.answerFormat === "list") {
+  }else if (message.answerFormat === "list") {
     return (
-      <ul>
-        {Array.isArray(message.text)
-          ? message.text.map((item, index) => <li key={index}>{item}</li>)
-          : Object.entries(message.text).map(([key, value], index) => (
-              <li key={index}>
-                <strong>{key}:</strong> {value}
-              </li>
-            ))}
-      </ul>
+      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 max-w-2xl w-full animate-fadeIn">
+    <ul className="space-y-2 text-gray-700">
+      {Array.isArray(message.text)
+        ? message.text.map((item, index) => (
+            <li key={index} className="text-sm sm:text-base">
+              • {item}
+            </li>
+          ))
+        : Object.entries(message.text).map(([key, value], index) => (
+            <li key={index} className="flex justify-between items-start py-1">
+              <span className="font-medium text-gray-800">{key}:</span>
+              <span className="ml-4 text-right max-w-xs truncate">{value}</span>
+            </li>
+          ))
+      }
+    </ul>
+  </div>
     );
   } else if(message.answerFormat === 'Plot') {
     console.log(message)
       const plot = JSON.parse(message.text)
       
   
-  const handleAddToDashboard = ()=>{
-
-
-  }
         return (
           <div  className="bg-white rounded-lg shadow">
                   <div className="p-4 " style={{ height: "560px" , width: "560px" }}>

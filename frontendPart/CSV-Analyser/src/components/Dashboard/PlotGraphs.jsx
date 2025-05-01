@@ -1,6 +1,9 @@
 import { store } from '@/Store'
 import React, {  useState , useMemo , lazy, Suspense} from 'react'
-import {  useSelector } from 'react-redux'
+import {  useDispatch, useSelector } from 'react-redux'
+import { DashboardSkeleton } from './SkeletonLoading';
+import { setDataURL } from '@/Store/Dataframe';
+import { clearDashboardData } from '@/Store/Dashboard';
 const Graph =  lazy(() => import('./Graph'));
 const NumaricalAnalysis =  lazy(() => import('./NumaricalAnalysis'));
 const CategoricalAnalysis  =  lazy(() => import('./CategoricalAnalysis'));
@@ -9,6 +12,9 @@ const CategoricalAnalysis  =  lazy(() => import('./CategoricalAnalysis'));
 const PlotGraphs =  () => {
 
   const {content, loading} = useSelector(store => store.dashboardHtml)
+  
+  
+  const dispatch = useDispatch()
 
   const plots =  useMemo(() => {
     return content ? content?.plots?.map(graph => JSON.parse(graph)) : [];
@@ -17,13 +23,21 @@ const PlotGraphs =  () => {
   const [activeTab, setActiveTab] = useState('plots');
 
   
-  
+  const handleNewFileBtn = () =>{
+    
+    dispatch(setDataURL(null))
+    dispatch(clearDashboardData())
+  }
 
-  if (loading) return <div className="p-4 text-center">Loading dashboard data...</div>;
+
+  if (loading) return  <DashboardSkeleton/>;
   if (!content) return <div className="p-4 text-center">No data available</div>;
 
   return (
     <div className=" w-full  p-4 bg-gray-50 text-black">
+        <button  style={{ backgroundImage: 'linear-gradient(to bottom, #ED4264, #FFEDBC)' }} className='absolute right-[10vw] top-[2.7vh] p-[2rem] pt-[0.7rem] pb-[0.7rem] bg-linear-to-b from-[#DAE2F8] to-[#D6A4A4] rounded-[5px] shadow-md hover:scale-105 transform transition-transform duration-200 active:scale-95 text-white'
+                      onClick={handleNewFileBtn}
+                      >New File</button>
       <h1 className="text-2xl font-bold text-center mb-6">Dataset Insights Dashboard</h1>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">

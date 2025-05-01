@@ -1,5 +1,3 @@
-"use client";
-
 import { CalendarIcon, HomeIcon, MailIcon, PencilIcon } from "lucide-react";
 // import Link from "next/link";
 import React from "react";
@@ -93,7 +91,7 @@ const DATA = {
 
 export default function Footer() {
   return (
-    <div className="flex flex-col items-center justify-center mb-5 ">
+    <div className="flex flex-col items-center justify-center mb-5 bg-[#fff] ">
 
       <TooltipProvider>
         <Dock direction="middle">          

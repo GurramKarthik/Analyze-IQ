@@ -1,5 +1,5 @@
-import React, { lazy, memo, Suspense, useState } from 'react'
-// const Graph = lazy(() => import('./Graph'));
+import React, { memo } from 'react'
+
 
 const NumaricalAnalysis = memo(({ content }) => {
     

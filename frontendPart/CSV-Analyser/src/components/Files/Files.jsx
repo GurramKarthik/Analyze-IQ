@@ -27,7 +27,7 @@ const File = memo(() => {
   const startRow = useRef(0);
   const next = useRef(true);
 
-  // Fetch data from the backend
+  
   const getData = async () => {
     setLoading(true);
     const reqData = { "file_url": fileUrl, "startRow": startRow.current };
@@ -39,9 +39,9 @@ const File = memo(() => {
       });
 
       if (response.data.success) {
-        setColumns(response.data.columns); // Update columns
-        setRows(response.data.rows); // Update rows
-        next.current = response.data.next; // Update pagination flag
+        setColumns(response.data.columns); 
+        setRows(response.data.rows); 
+        next.current = response.data.next;
       } else {
         ToastMessage("error", response.data.message);
       }
@@ -52,19 +52,19 @@ const File = memo(() => {
     }
   };
 
-  // Trigger data fetch when fileUrl changes
+  
   useEffect(() => {
     if (fileUrl) {
-      getData(); // Fetch data only if fileUrl is available
+      getData(); 
     } else {
-      setLoading(false); // Handle case where fileUrl is undefined
+      setLoading(false); 
     }
-  }, [fileUrl]); // Add fileUrl as a dependency
+  }, [fileUrl]); 
 
-  // Cell Renderer for Grid
+  
   const CellRenderer = React.useCallback(({ columnIndex, rowIndex, style }) => {
     if (rowIndex === 0) {
-      // Render header
+      
       return (
         <div
           style={style}
@@ -103,10 +103,11 @@ const File = memo(() => {
 
   return (
     <>
-      <div className="flex flex-col h-[96vh] p-4">
+      <div className="flex flex-col  p-4">
         {/* Analyze Button */}
-        <Button
-          className="fixed right-[20vmin] top-[4vmin] z-10"
+        <button
+          style={{ backgroundImage: 'linear-gradient(to bottom, #24C6DC, #514A9D)' }} 
+          className='absolute right-[10vw] top-[2.7vh] p-[2rem] pt-[0.7rem] pb-[0.7rem] bg-linear-to-b from-[#DAE2F8] to-[#D6A4A4] rounded-[5px] shadow-md hover:scale-105 transform transition-transform duration-200 active:scale-95 text-white'
           onClick={() => {
             dispatch(setDataURL(fileUrl));
             dispatch(clearDashboardData());
@@ -115,10 +116,10 @@ const File = memo(() => {
           }}
         >
           Analyse this File
-        </Button>
+        </button>
 
         {/* Table Container */}
-        <div className="flex-grow overflow-hidden mb-4">
+        <div className="flex-grow overflow-hidden mb-4 mt-20 h-[90vh]">
           <AutoSizer>
             {({ height, width }) => (
               <Grid

@@ -1,11 +1,9 @@
 import React, { useRef, useState } from "react";
-import { Textarea } from "@/components/ui/textarea";
 import { addChat } from "@/Store/chat";
 import { ToastMessage } from "../Home/ToastMessage";
 import axios from "axios";
 import { BACKEND_END_POINT } from "@/utils/Constants";
 import { useDispatch, useSelector } from "react-redux";
-import { store } from "@/Store";
 import { ChevronDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { 
@@ -91,26 +89,32 @@ const ChatInput = ( {setLoading} ) => {
   };
 
   return (
-    <form className="flex gap-2 items-center  w-[60%] rounded items-center bg-[#444]" onSubmit={handleSend}>
-
-<DropdownMenu>
+    <form 
+    className="flex flex-col sm:flex-row gap-2 items-center w-full max-w-3xl mx-auto p-3 bg-gray-800 rounded-lg shadow-md"
+    onSubmit={handleSend}
+  >
+    
+    {/* Dropdown Menu */}
+    <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button 
           variant="ghost" 
-          className="ml-2 text-white hover:bg-[#555] hover:text-white"
+          className="text-white hover:bg-gray-700 hover:text-white px-3 py-2 h-auto flex items-center gap-1"
         >
-          {chatType} <ChevronDown className="ml-1 w-4 h-4" />
+          {chatType}
+          <ChevronDown className="w-4 h-4" />
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className="bg-[#333] text-white border-none">
+
+      <DropdownMenuContent className="bg-gray-700 text-white border-none rounded-md p-1">
         <DropdownMenuItem 
-          className="hover:bg-[#444] focus:bg-[#444] cursor-pointer"
+          className="hover:bg-gray-600 cursor-pointer px-3 py-2 rounded-md text-sm"
           onSelect={() => setChatType('Text')}
         >
           Text
         </DropdownMenuItem>
         <DropdownMenuItem 
-          className="hover:bg-[#444] focus:bg-[#444] cursor-pointer"
+          className="hover:bg-gray-600 cursor-pointer px-3 py-2 rounded-md text-sm"
           onSelect={() => setChatType('Plot')}
         >
           Plot
@@ -118,32 +122,39 @@ const ChatInput = ( {setLoading} ) => {
       </DropdownMenuContent>
     </DropdownMenu>
 
-
-      <Textarea
+    {/* Textarea Input */}
+    <div className="relative flex-1">
+      <textarea
         ref={newMessage}
-        placeholder="Type your message here."
-        id="message" // style is defined in app.css
-        className="resize-none border-none focus:border-transparent focus:ring-0 focus:outline-none item-center text-white"
+        placeholder="Type your message here..."
+        id="message"
+        rows="1"
+        className="w-full p-3 pl-4 pr-12 bg-gray-900 text-white rounded-lg border-none focus:ring-2 focus:ring-blue-500 focus:outline-none placeholder-gray-400 resize-none overflow-hidden"
       />
-      <button className="mr-3 sendBtn">
+      
+      {/* Send Button - inside textarea for cleaner look */}
+      <button
+        type="submit"
+        className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-white transition-colors"
+        aria-label="Send message"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
+          width="20"
+          height="20"
           viewBox="0 0 24 24"
           fill="none"
-          stroke="#f1efef"
+          stroke="currentColor"
           strokeWidth="2"
           strokeLinecap="round"
           strokeLinejoin="round"
-          className="lucide lucide-send-horizontal"
         >
           <path d="M3.714 3.048a.498.498 0 0 0-.683.627l2.843 7.627a2 2 0 0 1 0 1.396l-2.842 7.627a.498.498 0 0 0 .682.627l18-8.5a.5.5 0 0 0 0-.904z" />
           <path d="M6 12h16" />
         </svg>
       </button>
-    </form>
-  );
+    </div>
+  </form>  );
 };
 
 export default ChatInput;

@@ -2,7 +2,6 @@ import React, { useRef, useState } from 'react'
 import styles from "./Authentication.module.scss"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Button } from "@/components/ui/button"
 import { useNavigate } from 'react-router-dom'
 import { useDispatch } from 'react-redux'
@@ -11,7 +10,6 @@ import { Loader } from 'lucide-react'
 import axios from 'axios'
 import { BACKEND_END_POINT } from '@/utils/Constants'
 import { ToastMessage } from '../Home/ToastMessage'
-import { dark } from '@mui/material/styles/createPalette'
 
 
 const Login = ({setFlag}) => {

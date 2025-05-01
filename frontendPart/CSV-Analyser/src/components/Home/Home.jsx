@@ -6,6 +6,9 @@ import styles from "./Home.module.scss";
 import Footer from './Footer';
 import HoverDiv from './HoverDiv';
 import GetStartButton from './GetStartBtn';
+import DataFlowShowcase from './MagicPreview';
+import logo from "../../assets/logo2.png"
+
 
 const Home = () => {
   const [hoverState, setHoverState] = useState({
@@ -32,19 +35,24 @@ const Home = () => {
       onMouseMove={handleMouseMove}
       ref={containerRef}
     >
+
+      <img src={logo} alt="Logo" className=" absolute left-[5vw] top-[4vh] w-[200px] h-[60px]"/>
+
       <HeroSection />
       <div className={`pt-[1vmin] ${styles.second} flex flex-col`}>
         <Card />
       </div>
       <HorizontalScrolling />
-
+      <DataFlowShowcase/>
       <HoverDiv hoverState={hoverState} setHoverState={setHoverState}/>
     
-      <div className='relative w-full h-10 flex flex-row justify-center items-center translate-y-[-40px]'>
+      <div className='relative w-full h-10 flex flex-row justify-center items-center translate-y-[-40px] bg-white'>
         <GetStartButton/>
       </div>
-      <Footer/>
 
+    <div className='bg-white'>
+      <Footer />
+    </div>
     </div>
   );
 };

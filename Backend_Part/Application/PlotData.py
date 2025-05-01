@@ -1,3 +1,5 @@
+import matplotlib
+matplotlib.use('agg')
 from .Prompts_text import dashbordPrompt
 import os
 import json
@@ -74,11 +76,14 @@ def plotGraphs(instances, analysis_results):
             )
 
         
-     
+        if instances.get("llm") is not None:
+            print("Present")
         try:
             print('setting metaData ')
             chain = prompt | instances.get("llm")
+            print("chain Done")
             answer = chain.invoke({"dashbordPrompt": dashbordPrompt, "data": first10rows})
+            print("asnswer Done", answer.content)
             metaData = json.loads(answer.content)
             print('metaData set')
         except Exception as e:
@@ -172,13 +177,7 @@ def plotGraphs(instances, analysis_results):
 
 
 
-# Final Meta: [{'x': 'region', 'y': 'expenses', 'title': 'Expenses by Region', 'color_discrete_sequence': ['blue']}, {'x': 'expenses', 'title': 'Distribution of Expenses', 'color_discrete_sequence': ['blue'], 'template': 'plotly_white'}, {'x': 'sex', 'y': 'expenses'}, {'x': 'age', 'y': 'expenses', 'title': 'Expenses vs Age'}, {'x': 'bmi', 'y': 'expenses', 'title': 'Expenses vs BMI'}, {'x': 'smoker', 'y': 'expenses', 'title': 'Expenses by Smoker Status'}, {'x': 'region', 'y': 'expenses'}, {'x': 'age', 'title': 'Distribution of Age', 'color_discrete_sequence': ['blue'], 'template': 'plotly_white'}, {'x': 'bmi', 'title': 'Distribution of BMI', 'color_discrete_sequence': ['blue'], 'template': 'plotly_white'}, {'values': [1064, 274], 'names': ['no', 'yes'], 'title': 'Smoker Status Distribution'}, {'x': 'children', 'y': 'expenses', 'title': 'Average Expenses by Number of Children', 'color_discrete_sequence': ['blue'], 'template': 'plotly_white'}]
-# metaData:  [{'graphType': 'bar', 'title': 'Expenses by Region'}, {'graphType': 'histogram', 'title': 'Distribution of Expenses'}, {'graphType': 'box', 'title': 'Expenses by Sex'}, {'graphType': 'scatter', 'title': 'Expenses vs Age'}, {'graphType': 'scatter', 'title': 'Expenses vs BMI'}, {'graphType': 'bar', 'title': 'Expenses by Smoker Status'}, {'graphType': 'violin', 'title': 'Expenses Distribution by Region'}, {'graphType': 'histogram', 'title': 'Distribution of Age'}, {'graphType': 'histogram', 'title': 'Distribution of BMI'}, {'graphType': 'pie', 'title': 'Smoker Status Distribution'}, {'graphType': 'bar', 'title': 'Average Expenses by Number of Children'}]
-# Final Meta: [{'x': 'COUNTRY', 'y': 'SALES', 'data': [{'COUNTRY': 'USA', 'SALES': 3627982.83}, {'COUNTRY': 'Spain', 'SALES': 1215686.92}, {'COUNTRY': 'France', 'SALES': 1110916.52}, {'COUNTRY': 'Australia', 'SALES': 630623.1}, {'COUNTRY': 'UK', 'SALES': 478880.46}, {'COUNTRY': 'Italy', 'SALES': 374674.31}, {'COUNTRY': 'Finland', 'SALES': 329581.91}, {'COUNTRY': 'Norway', 'SALES': 307463.7}, {'COUNTRY': 'Singapore', 'SALES': 288488.41}, {'COUNTRY': 'Denmark', 'SALES': 245637.15}]}, {'x': 'QUANTITYORDERED', 'y': 'SALES', 'title': 'Relationship between Quantity Ordered and Sales'}, {'values': [3919615.66, 1166388.34, 975003.57, 714437.13, 226243.47, 1127789.84, 1903150.84], 'names': ['Classic Cars', 'Motorcycles', 'Planes', 'Ships', 'Trains', 'Trucks and Buses', 'Vintage Cars'], 'title': 'Distribution of Sales by Product Line'}, {'x': 'MONTH', 'y': 'SALES', 'title': 'Monthly Sales Trend'}, {'x': 'QUANTITYORDERED', 'title': 'Distribution of Order Quantity', 'color_discrete_sequence': ['blue'], 'template': 'plotly_white'}, {'x': 'DEALSIZE', 'y': 'SALES', 'title': 'Sales Distribution by Deal Size'}, {'path': ['COUNTRY', 'PRODUCTLINE'], 'values': 'SALES'}, {'names': 'PRODUCTLINE', 'parents': 'COUNTRY', 'values': 'SALES', 'color': 'DEALSIZE'}]
-# finalMeta = [{'x': 'region', 'y': 'expenses', 'title': 'Expenses by Region', 'color_discrete_sequence': ['blue']}, {'x': 'expenses', 'title': 'Distribution of Expenses', 'color_discrete_sequence': ['blue'], 'template': 'plotly_white'}, {'x': 'sex', 'y': 'expenses'}, {'x': 'age', 'y': 'expenses', 'title': 'Expenses vs Age'}, {'x': 'bmi', 'y': 'expenses', 'title': 'Expenses vs BMI'}, {'x': 'smoker', 'y': 'expenses', 'title': 'Expenses by Smoker Status'}, {'x': 'region', 'y': 'expenses'}, {'x': 'age', 'title': 'Distribution of Age', 'color_discrete_sequence': ['blue'], 'template': 'plotly_white'}, {'x': 'bmi', 'title': 'Distribution of BMI', 'color_discrete_sequence': ['blue'], 'template': 'plotly_white'}, {'values': [1064, 274], 'names': ['no', 'yes'], 'title': 'Smoker Status Distribution'}, {'x': 'children', 'y': 'expenses', 'title': 'Average Expenses by Number of Children', 'color_discrete_sequence': ['blue'], 'template': 'plotly_white'}]
-       # metaData:  [{'graphType': 'bar', 'title': 'Top 10 Countries by Sales'}, {'graphType': 'scatter', 'title': 'Relationship between Quantity Ordered and Sales'}, {'graphType': 'pie', 'title': 'Distribution of Sales by Product Line'}, {'graphType': 'line', 'title': 'Monthly Sales Trend'}, {'graphType': 'histogram', 'title': 'Distribution of Order Quantity'}, {'graphType': 'box', 'title': 'Sales Distribution by Deal Size'}, {'graphType': 'sunburst', 'title': 'Sales by Country and Product Line'}, {'graphType': 'treemap', 'title': 'Sales by Country, Product Line, and Deal Size'}]
-        # metaData =[{'graphType': 'bar', 'title': 'Expenses by Region'}, {'graphType': 'histogram', 'title': 'Distribution of Expenses'}, {'graphType': 'box', 'title': 'Expenses by Sex'}, {'graphType': 'scatter', 'title': 'Expenses vs Age'}, {'graphType': 'scatter', 'title': 'Expenses vs BMI'}, {'graphType': 'bar', 'title': 'Expenses by Smoker Status'}, {'graphType': 'violin', 'title': 'Expenses Distribution by Region'}, {'graphType': 'histogram', 'title': 'Distribution of Age'}, {'graphType': 'histogram', 'title': 'Distribution of BMI'}, {'graphType': 'pie', 'title': 'Smoker Status Distribution'}, {'graphType': 'bar', 'title': 'Average Expenses by Number of Children'}]
-   
+
 # import json
 # import re
 # import pandas as pd

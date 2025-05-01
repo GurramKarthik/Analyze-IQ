@@ -20,6 +20,8 @@ venv/
 .conda/
 myenv/
 
+.env
+
 # Ignore dependency installations
 *.egg-info/
 

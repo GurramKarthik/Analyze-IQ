@@ -1,9 +1,9 @@
 import React , {useRef, useState} from 'react'
 
 // Import your images
-import image1 from '../../assets/forwebsite.svg';
-import image2 from '../../assets/image2.svg';
-import image3 from '../../assets/csv.svg';
+import AutomatedEDA from '../../assets/AutomatedEDA.png';
+import smartVisualisation from '../../assets/smartVisualisation.png';
+import conversationData from '../../assets/conversationData.png';
 import styles from "./Home.module.scss";
 
 
@@ -30,16 +30,16 @@ const HoverDiv = ({hoverState,setHoverState}) => {
     
       // Image mapping for each div
       const imageMap = {
-        div1: image1,
-        div2: image2,
-        div3: image3
+        div1: AutomatedEDA,
+        div2: smartVisualisation,
+        div3: conversationData
       };
     
 
   return (
     <>
     
-    <div className='h-100vh relative flex flex-col gap-10'>
+    <div className='h-100vh relative flex flex-col gap-10 bg-white'>
         <div className='h-[80vh] relative flex flex-col gap-0 mt-[3vmin]'>
           {/* Hoverable Div 1 */}
           <div 
@@ -47,7 +47,7 @@ const HoverDiv = ({hoverState,setHoverState}) => {
             onMouseEnter={() => handleMouseEnter('div1')}
             onMouseLeave={handleMouseLeave}
           >
-            <p>Feature 1</p>
+            <p>Automated EDA</p>
           </div>
           
           {/* Hoverable Div 2 */}
@@ -56,7 +56,7 @@ const HoverDiv = ({hoverState,setHoverState}) => {
             onMouseEnter={() => handleMouseEnter('div2')}
             onMouseLeave={handleMouseLeave}
           >
-            <p>Feature 2</p>
+            <p>Smart Visualizations</p>
           </div>
           
           {/* Hoverable Div 3 */}
@@ -65,7 +65,7 @@ const HoverDiv = ({hoverState,setHoverState}) => {
             onMouseEnter={() => handleMouseEnter('div3')}
             onMouseLeave={handleMouseLeave}
           >
-            <p>Feature 3</p>
+            <p>Conversational Analytics</p>
           </div>
         </div>
       </div>
@@ -80,11 +80,11 @@ const HoverDiv = ({hoverState,setHoverState}) => {
             transform: 'translate(-50%, -50%)'
           }}
         >
-          <div className="bg-white p-2 rounded-lg shadow-xl border border-gray-200">
+          <div className=" p-2 rounded-lg shadow-xl border border-gray-200">
             <img 
               src={imageMap[hoverState.activeImage]} 
               alt="Preview" 
-              className="w-64 h-64 object-cover"
+              className="w-64 h-64 object-cover drop-shadow-lg"
             />
           </div>
         </div>

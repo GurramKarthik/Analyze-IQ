@@ -8,17 +8,13 @@ import pandas as pd
 def getDB():
     return mongo.db
 
-
 def register_user(request):
     data = request.json
     db = getDB()
     users = db["users"]
-
     if users.find_one({"email": data.get("email")}):
         return jsonify({"success":False, "message": "User already exists"}), 400
-
     hashed_password = hash_password(data.get("password"))
-
     user = {
         "name": data.get("name"),
         "email": data.get("email"),
@@ -26,9 +22,7 @@ def register_user(request):
         "password": hashed_password,
         "files" : []
     }
-
     users.insert_one(user)
-
     return jsonify({"success":True, "message": "User registered successfully"}), 201
 
 def login_user(request):

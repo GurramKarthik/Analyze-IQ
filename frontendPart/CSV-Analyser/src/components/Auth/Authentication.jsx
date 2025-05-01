@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { Outlet } from "react-router-dom";
 import Signup from "./Signup";
 import Login from "./Login";
 import styles from "./Authentication.module.scss"

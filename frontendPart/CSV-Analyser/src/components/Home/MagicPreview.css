@@ -1,0 +1,60 @@
+/* MagicPreview.css */
+.magic-preview-container {
+    padding: 4rem 2rem;
+    text-align: center;
+    background: #ffffff; /* Solid white to avoid transparency issues */
+    width: 100%;
+    min-height: 400px; /* Prevents collapse */
+  }
+  
+  .magic-preview-title {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    color: #3b82f6; /* Fallback for gradient */
+    background: linear-gradient(to right, #3b82f6, #10b981);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  
+  .demo-grid {
+    display: flex;
+    gap: 1.5rem;
+    justify-content: center;
+    flex-wrap: wrap; /* Responsive fallback */
+    padding: 1rem;
+  }
+  
+  .demo-card {
+    background: white;
+    border-radius: 1rem;
+    padding: 2rem;
+    width: 300px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0; /* Subtle border */
+  }
+  
+  .demo-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(59, 130, 246, 0.2);
+  }
+  
+  .demo-card.active {
+    border: 2px solid #3b82f6;
+  }
+  
+  .cta-button {
+    background: #3b82f6;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: background 0.2s;
+  }
+  
+  .cta-button:hover {
+    background: #2563eb;
+  }

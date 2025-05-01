@@ -8,5 +8,5 @@ dashbordPrompt = """
     output:
         - return an array having objects where each object has graphtype and title saying about the graph for insight. 
         - graph type should be suitable for plotly.
-    No preamble required. just return an array
+        - No preamble required like json etc.... just return an array
 """
