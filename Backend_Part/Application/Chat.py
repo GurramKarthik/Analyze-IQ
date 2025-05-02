@@ -70,7 +70,7 @@ def plotGrpah( query, instances, chatEngine, chatLLm):
         else:
             filtered_params = filter_valid_plotly_params(metaData[0]['graphType'], data_dict , instances.get('df'))
             fig = getattr(px, metaData[0]['graphType'])(instances.get('df'), **filtered_params)
-            fig.show()
+            
         graph_json = plotly.utils.PlotlyJSONEncoder().encode(fig)
         return jsonify({"success":True, "query": query, "answerFormat": "Plot" , "answer": graph_json}), 200
     except Exception as e:
